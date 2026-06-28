@@ -1,0 +1,94 @@
+name: PR Title Lint
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+
+permissions:
+  pull-requests: write
+  statuses: write
+
+jobs:
+  lint-pr-title:
+    name: Validate PR Title
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Conventional Commit title
+        uses: amannn/action-semantic-pull-request@v5
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            chore
+            revert
+          scopes: |
+            web
+            widget
+            ui
+            math
+            eslint-config
+            typescript-config
+            deps
+            ci
+            docs
+            repo
+          requireScope: false
+          disallowScopes: |
+            release
+          subjectPattern: ^(?![A-Z]).+$
+          subjectPatternError: |
+            The subject "{subject}" found in the pull request title "{title}"
+            must not start with an uppercase letter.
+          ignoreLabels: |
+            bot
+            ignore-semantic-pr-title
+          headerPattern: '^(\w*)(?:\((\w*)\))?!?: (.*)$'
+          headerPatternCorrespondence: type, scope, subject
+
+      - name: Post validation failure comment
+        if: always() && (steps.semantic.outputs.error_message != null)
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: pr-title-lint-error
+          message: |
+            ## ❌ PR Title Validation Failed
+
+            Your PR title does not follow the [Conventional Commits](https://www.conventionalcommits.org) format.
+
+            **Current title:** `${{ github.event.pull_request.title }}`
+
+            **Expected format:** `<type>(<scope>): <subject>`
+
+            ### Valid types:
+            `feat` `fix` `docs` `style` `refactor` `perf` `test` `build` `ci` `chore` `revert`
+
+            ### Examples:
+            ```
+            feat(web): add user authentication
+            fix(ui): resolve focus ring on Safari
+            docs: update contributing guide
+            chore(deps): bump next to 16.3.0
+            ```
+
+            > **Error:** ${{ steps.semantic.outputs.error_message }}
+
+      - name: Clear validation failure comment on success
+        if: ${{ steps.semantic.outputs.error_message == null }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: pr-title-lint-error
+          delete: true

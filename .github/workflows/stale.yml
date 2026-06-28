@@ -1,0 +1,62 @@
+name: Stale Issues & PRs
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    name: Mark and Close Stale Items
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mark stale issues and PRs
+        uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+          # Issues
+          days-before-issue-stale: 30
+          days-before-issue-close: 14
+          stale-issue-label: "stale"
+          stale-issue-message: >
+            This issue has been automatically marked as stale because it has not had
+            any activity for **30 days**. It will be closed in **14 days** if no further
+            activity occurs.
+
+            If this issue is still relevant, please:
+            - Leave a comment with updated context
+            - Remove the `stale` label
+
+            Thank you for your contributions to Echo!
+          close-issue-message: >
+            This issue has been automatically closed due to inactivity.
+            If you believe this is still relevant, please open a new issue with updated information.
+          close-issue-reason: not_planned
+
+          # Pull Requests
+          days-before-pr-stale: 14
+          days-before-pr-close: 7
+          stale-pr-label: "stale"
+          stale-pr-message: >
+            This pull request has been automatically marked as stale because it has not had
+            any activity for **14 days**. It will be closed in **7 days** if no further
+            activity occurs.
+
+            If you're still working on this, please:
+            - Push new commits or leave a comment
+            - Remove the `stale` label
+
+            Thank you for your contribution!
+          close-pr-message: >
+            This pull request has been automatically closed due to inactivity.
+            Please reopen it if you'd like to continue working on this.
+
+          # Exemptions
+          exempt-issue-labels: "pinned,security,in-progress,blocked,help-wanted"
+          exempt-pr-labels: "pinned,security,in-progress,blocked,do-not-merge"
+          exempt-all-milestones: true

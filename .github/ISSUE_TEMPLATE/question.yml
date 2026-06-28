@@ -1,0 +1,36 @@
+name: Question
+description: Ask a question about the project
+title: "question: "
+labels: ["question"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before asking, please check:
+        - [README](https://github.com/RISHII7/echo/blob/main/README.md)
+        - [CONTRIBUTING](https://github.com/RISHII7/echo/blob/main/CONTRIBUTING.md)
+        - [Existing issues](https://github.com/RISHII7/echo/issues?q=label%3Aquestion)
+        - [Discussions](https://github.com/RISHII7/echo/discussions)
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Any relevant context, code snippets, or what you've already tried.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have checked the documentation and existing issues
+          required: true

@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Discussions
+    url: https://github.com/RISHII7/echo/discussions
+    about: Ask questions and discuss ideas in GitHub Discussions
+  - name: Security Vulnerability
+    url: https://github.com/RISHII7/echo/blob/main/SECURITY.md
+    about: Please review our Security Policy before reporting a vulnerability

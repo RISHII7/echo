@@ -1,0 +1,39 @@
+# CODEOWNERS
+#
+# Each line is a file pattern followed by one or more owners.
+# Owners are automatically requested for review when someone opens a PR
+# that modifies code matching the pattern.
+#
+# More info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Global fallback — all files
+* @RISHII7
+
+# Root configuration
+/*.json @RISHII7
+/*.yaml @RISHII7
+/*.yml @RISHII7
+/*.ts @RISHII7
+/*.js @RISHII7
+
+# Web application
+/apps/web/ @RISHII7
+
+# Widget application
+/apps/widget/ @RISHII7
+
+# Shared UI package
+/packages/ui/ @RISHII7
+
+# Shared utilities
+/packages/math/ @RISHII7
+
+# Tooling — requires extra scrutiny
+/packages/eslint-config/ @RISHII7
+/packages/typescript-config/ @RISHII7
+
+# CI/CD — requires extra scrutiny
+/.github/workflows/ @RISHII7
+
+# Security-sensitive files
+/SECURITY.md @RISHII7

@@ -1,0 +1,87 @@
+name: Feature Request
+description: Suggest a new feature or enhancement
+title: "feat: "
+labels: ["enhancement", "needs-triage"]
+assignees:
+  - RISHII7
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Before You Submit
+        - Search [existing issues](https://github.com/RISHII7/echo/issues) to avoid duplicates
+        - Check the [roadmap](https://github.com/RISHII7/echo/discussions) to see if it's planned
+        - Read the [Contributing Guide](https://github.com/RISHII7/echo/blob/main/CONTRIBUTING.md)
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which area does this feature belong to?
+      multiple: true
+      options:
+        - "apps/web"
+        - "apps/widget"
+        - "packages/ui"
+        - "packages/math"
+        - "Build / Tooling"
+        - "CI/CD"
+        - "Documentation"
+        - "Developer Experience"
+        - "Performance"
+        - "Security"
+        - "Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve? What's the motivation?
+      placeholder: "I'm frustrated when... / It would be helpful if... / Currently there's no way to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the feature you'd like to see. Be as specific as possible.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered any alternative solutions or workarounds?
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature to you?
+      options:
+        - "Nice to have"
+        - "Important"
+        - "Critical / Blocking"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Mockups, examples from other projects, references, or any other context.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues and this is not a duplicate
+          required: true
+        - label: I would be willing to submit a PR to implement this feature
+          required: false
