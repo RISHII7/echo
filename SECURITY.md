@@ -4,8 +4,8 @@
 
 The following versions of Echo are currently receiving security updates:
 
-| Version | Supported |
-|---|---|
+| Version          | Supported |
+| ---------------- | --------- |
 | `0.x.x` (latest) | ✅ Active |
 
 ---
@@ -34,21 +34,21 @@ To help us triage and respond quickly, please include:
 
 ## Response Timeline
 
-| Stage | Timeframe |
-|---|---|
-| Initial acknowledgement | Within **48 hours** |
-| Severity assessment | Within **5 business days** |
-| Fix development | Depends on severity (see below) |
-| Public disclosure | After fix is released |
+| Stage                   | Timeframe                       |
+| ----------------------- | ------------------------------- |
+| Initial acknowledgement | Within **48 hours**             |
+| Severity assessment     | Within **5 business days**      |
+| Fix development         | Depends on severity (see below) |
+| Public disclosure       | After fix is released           |
 
 ### Severity-Based Response Times
 
-| Severity | Description | Target Fix Time |
-|---|---|---|
-| **Critical** | Remote code execution, authentication bypass, data breach | 24–72 hours |
-| **High** | Privilege escalation, significant data exposure | 7 days |
-| **Medium** | Limited data exposure, requires user interaction | 30 days |
-| **Low** | Minimal impact, defense-in-depth issue | 90 days |
+| Severity     | Description                                               | Target Fix Time |
+| ------------ | --------------------------------------------------------- | --------------- |
+| **Critical** | Remote code execution, authentication bypass, data breach | 24–72 hours     |
+| **High**     | Privilege escalation, significant data exposure           | 7 days          |
+| **Medium**   | Limited data exposure, requires user interaction          | 30 days         |
+| **Low**      | Minimal impact, defense-in-depth issue                    | 90 days         |
 
 ---
 
@@ -89,12 +89,12 @@ When contributing to Echo:
 
 This repository uses the following automated security tooling:
 
-| Tool | Purpose |
-|---|---|
-| **GitHub CodeQL** | Static analysis for vulnerability detection |
-| **Dependabot** | Automated dependency vulnerability alerts and updates |
-| **GitHub Secret Scanning** | Detects accidentally committed secrets |
-| **Branch Protection** | Prevents direct pushes to `main` and `develop` |
+| Tool                       | Purpose                                               |
+| -------------------------- | ----------------------------------------------------- |
+| **GitHub CodeQL**          | Static analysis for vulnerability detection           |
+| **Dependabot**             | Automated dependency vulnerability alerts and updates |
+| **GitHub Secret Scanning** | Detects accidentally committed secrets                |
+| **Branch Protection**      | Prevents direct pushes to `main` and `develop`        |
 
 ---
 
@@ -102,7 +102,7 @@ This repository uses the following automated security tooling:
 
 We are grateful to security researchers who responsibly disclose vulnerabilities. Contributors will be acknowledged here with their permission.
 
-*No vulnerabilities have been reported yet.*
+_No vulnerabilities have been reported yet._
 
 ---
 

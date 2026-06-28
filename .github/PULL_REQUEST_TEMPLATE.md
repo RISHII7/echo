@@ -29,9 +29,7 @@ Closes #<!-- issue number -->
 
 -
 -
--
-
----
+- ***
 
 ## Screenshots / Recordings
 
@@ -39,8 +37,8 @@ Closes #<!-- issue number -->
 <!-- Delete this section if not applicable. -->
 
 | Before | After |
-|---|---|
-| | |
+| ------ | ----- |
+|        |       |
 
 ---
 
@@ -56,6 +54,7 @@ Closes #<!-- issue number -->
 - [ ] Tested edge cases
 
 **Test environment:**
+
 - OS:
 - Node:
 - Browser (if applicable):

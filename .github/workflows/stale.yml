@@ -37,7 +37,6 @@ jobs:
             This issue has been automatically closed due to inactivity.
             If you believe this is still relevant, please open a new issue with updated information.
           close-issue-reason: not_planned
-
           # Pull Requests
           days-before-pr-stale: 14
           days-before-pr-close: 7

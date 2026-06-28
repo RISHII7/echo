@@ -22,6 +22,7 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
 ### Added
 
 #### Monorepo Architecture
+
 - Initialized Turborepo 2 monorepo with workspace dependency graph and parallel task execution
 - Configured `turbo.json` with `build`, `dev`, `lint`, `typecheck`, and `format` task pipelines
 - Set up `pnpm-workspace.yaml` with `apps/*` and `packages/*` glob patterns
@@ -29,6 +30,7 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
 - Set Node.js engine requirement `>=20` in root `package.json`
 
 #### Applications
+
 - **`apps/web`** — Next.js 16 (App Router) web application
   - Configured with Turbopack (`next dev --turbopack`) for fast local development
   - React 19.2.4 with Server Components support enabled
@@ -41,6 +43,7 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
 - **`apps/widget`** — Embeddable widget application scaffold
 
 #### Shared Packages
+
 - **`packages/ui`** — Shared component library
   - Built on shadcn/ui primitives and Radix UI
   - Nova preset (Geist font + Lucide icons)
@@ -58,6 +61,7 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
   - `react-library.json` — Shared React library settings
 
 #### Developer Tooling
+
 - Prettier 3.8.3 with `prettier-plugin-tailwindcss` for class sorting
 - `.prettierrc` and `.prettierignore` at repository root
 - `.eslintrc.js` at repository root
@@ -65,6 +69,7 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
 - `.gitignore` covering Node.js, Next.js, Turborepo, OS, and editor artifacts
 
 #### GitHub Repository Governance
+
 - **`LICENSE`** — MIT License (Copyright 2026 Rishikesh Palande)
 - **`README.md`** — Full project documentation including:
   - CI, CodeQL, license, Node, pnpm, TypeScript, Next.js, Turborepo, Tailwind, and PRs badges
@@ -100,6 +105,7 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
   - Automated tooling inventory (CodeQL, Dependabot, Secret Scanning, Branch Protection)
 
 #### GitHub Actions Workflows
+
 - **`ci.yml`** — Continuous Integration pipeline
   - Triggers on push and PR to `main` and `develop`
   - Concurrent run cancellation to avoid redundant builds
@@ -130,6 +136,7 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
   - Auto-clears failure comment when title is corrected
 
 #### GitHub Configuration Files
+
 - **`.github/CODEOWNERS`** — Automatic review assignment for all paths, with special entries for workflows and security files
 - **`.github/dependabot.yml`** — Automated dependency updates
   - 5 update targets: root, `apps/web`, `apps/widget`, `packages/ui`, GitHub Actions
