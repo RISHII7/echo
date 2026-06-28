@@ -58,11 +58,11 @@ By participating, you agree to uphold our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ### Prerequisites
 
-| Tool | Version |
-|---|---|
+| Tool    | Version      |
+| ------- | ------------ |
 | Node.js | `>= 22.15.1` |
-| pnpm | `>= 10.13.1` |
-| Git | Latest |
+| pnpm    | `>= 10.13.1` |
+| Git     | Latest       |
 
 ### Recommended Setup
 
@@ -135,14 +135,14 @@ For **significant changes** (new features, breaking changes, architectural decis
 
 All branches must follow this naming convention:
 
-| Type | Pattern | Example |
-|---|---|---|
-| Feature | `feature/<short-description>` | `feature/user-auth` |
-| Bug fix | `fix/<short-description>` | `fix/button-focus-ring` |
-| Documentation | `docs/<short-description>` | `docs/api-reference` |
-| Chore | `chore/<short-description>` | `chore/update-deps` |
-| Hotfix | `hotfix/<short-description>` | `hotfix/critical-xss` |
-| Release | `release/<version>` | `release/1.2.0` |
+| Type          | Pattern                       | Example                 |
+| ------------- | ----------------------------- | ----------------------- |
+| Feature       | `feature/<short-description>` | `feature/user-auth`     |
+| Bug fix       | `fix/<short-description>`     | `fix/button-focus-ring` |
+| Documentation | `docs/<short-description>`    | `docs/api-reference`    |
+| Chore         | `chore/<short-description>`   | `chore/update-deps`     |
+| Hotfix        | `hotfix/<short-description>`  | `hotfix/critical-xss`   |
+| Release       | `release/<version>`           | `release/1.2.0`         |
 
 **Rules:**
 
@@ -178,19 +178,19 @@ This project strictly follows [Conventional Commits](https://www.conventionalcom
 
 ### Types
 
-| Type | When to Use |
-|---|---|
-| `feat` | Adds a new feature (triggers minor version bump) |
-| `fix` | Fixes a bug (triggers patch version bump) |
-| `docs` | Documentation only changes |
-| `style` | Formatting, whitespace — no logic change |
+| Type       | When to Use                                             |
+| ---------- | ------------------------------------------------------- |
+| `feat`     | Adds a new feature (triggers minor version bump)        |
+| `fix`      | Fixes a bug (triggers patch version bump)               |
+| `docs`     | Documentation only changes                              |
+| `style`    | Formatting, whitespace — no logic change                |
 | `refactor` | Code change that neither fixes a bug nor adds a feature |
-| `perf` | Improves performance |
-| `test` | Adding or updating tests |
-| `build` | Changes to build system or dependencies |
-| `ci` | Changes to CI configuration |
-| `chore` | Other changes that don't modify src or test files |
-| `revert` | Reverts a previous commit |
+| `perf`     | Improves performance                                    |
+| `test`     | Adding or updating tests                                |
+| `build`    | Changes to build system or dependencies                 |
+| `ci`       | Changes to CI configuration                             |
+| `chore`    | Other changes that don't modify src or test files       |
+| `revert`   | Reverts a previous commit                               |
 
 ### Scopes
 
@@ -257,11 +257,11 @@ Keep PRs focused and small. A PR that touches fewer files is easier and faster t
 
 ### Targeting the Correct Branch
 
-| Change Type | Target Branch |
-|---|---|
-| Features, fixes, docs | `develop` |
+| Change Type                 | Target Branch   |
+| --------------------------- | --------------- |
+| Features, fixes, docs       | `develop`       |
 | Critical production patches | `main` (hotfix) |
-| Release preparation | `develop` |
+| Release preparation         | `develop`       |
 
 ---
 
@@ -283,14 +283,14 @@ Keep PRs focused and small. A PR that touches fewer files is easier and faster t
 
 ### Naming
 
-| Entity | Convention | Example |
-|---|---|---|
-| Files | `kebab-case` | `user-profile.tsx` |
-| Components | `PascalCase` | `UserProfile` |
-| Hooks | `camelCase` with `use` prefix | `useUserProfile` |
-| Utilities | `camelCase` | `formatDate` |
-| Constants | `UPPER_SNAKE_CASE` | `MAX_RETRY_COUNT` |
-| Types/Interfaces | `PascalCase` | `UserProfileProps` |
+| Entity           | Convention                    | Example            |
+| ---------------- | ----------------------------- | ------------------ |
+| Files            | `kebab-case`                  | `user-profile.tsx` |
+| Components       | `PascalCase`                  | `UserProfile`      |
+| Hooks            | `camelCase` with `use` prefix | `useUserProfile`   |
+| Utilities        | `camelCase`                   | `formatDate`       |
+| Constants        | `UPPER_SNAKE_CASE`            | `MAX_RETRY_COUNT`  |
+| Types/Interfaces | `PascalCase`                  | `UserProfileProps` |
 
 ### Formatting
 
@@ -329,13 +329,14 @@ pnpm test:coverage # With coverage report
 
 Releases are managed by maintainers following [Semantic Versioning](https://semver.org):
 
-| Change | Version Bump |
-|---|---|
-| `BREAKING CHANGE` | Major (`1.0.0` → `2.0.0`) |
-| `feat` | Minor (`1.0.0` → `1.1.0`) |
+| Change                | Version Bump              |
+| --------------------- | ------------------------- |
+| `BREAKING CHANGE`     | Major (`1.0.0` → `2.0.0`) |
+| `feat`                | Minor (`1.0.0` → `1.1.0`) |
 | `fix`, `perf`, others | Patch (`1.0.0` → `1.0.1`) |
 
 Releases are created by:
+
 1. Merging `develop` into `main`
 2. Pushing a version tag (`v1.2.3`)
 3. The release workflow automatically creates the GitHub Release with generated notes

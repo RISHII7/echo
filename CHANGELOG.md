@@ -11,6 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.1] - 2026-06-28
+
+### Fixed
+
+- **CI: pnpm version conflict** — Removed hardcoded `PNPM_VERSION: "10.13.1"` env var
+  from `ci.yml`, `release.yml`, and `codeql.yml`. `pnpm/action-setup@v4` now reads the
+  version directly from `packageManager` in `package.json` (`pnpm@10.33.4`), eliminating
+  the `ERR_PNPM_BAD_PM_VERSION` error that caused all CI runs to fail on Setup pnpm step.
+- **CI: format-check command** — Replaced `pnpm format --check` (which incorrectly passed
+  `--check` to Turbo, an invalid flag) with `pnpm exec prettier --check` to invoke Prettier
+  directly, making the Format Check job functional.
+- **CI: Dependabot PR title failures** — Added `if: github.actor != 'dependabot[bot]'`
+  guard to `pr-title.yml` so Conventional Commits validation is skipped on automated
+  Dependabot PRs, which use their own title format.
+- **Formatting** — Applied Prettier auto-formatting across 18 files to satisfy the now-
+  working format-check CI job. No logic changes — whitespace, quotes, and trailing newlines only.
+
+---
+
 ## [0.1.0] - 2026-06-28
 
 ### Overview
@@ -22,6 +41,7 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
 ### Added
 
 #### Monorepo Architecture
+
 - Initialized Turborepo 2 monorepo with workspace dependency graph and parallel task execution
 - Configured `turbo.json` with `build`, `dev`, `lint`, `typecheck`, and `format` task pipelines
 - Set up `pnpm-workspace.yaml` with `apps/*` and `packages/*` glob patterns
@@ -29,6 +49,7 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
 - Set Node.js engine requirement `>=20` in root `package.json`
 
 #### Applications
+
 - **`apps/web`** — Next.js 16 (App Router) web application
   - Configured with Turbopack (`next dev --turbopack`) for fast local development
   - React 19.2.4 with Server Components support enabled
@@ -41,6 +62,7 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
 - **`apps/widget`** — Embeddable widget application scaffold
 
 #### Shared Packages
+
 - **`packages/ui`** — Shared component library
   - Built on shadcn/ui primitives and Radix UI
   - Nova preset (Geist font + Lucide icons)
@@ -58,6 +80,7 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
   - `react-library.json` — Shared React library settings
 
 #### Developer Tooling
+
 - Prettier 3.8.3 with `prettier-plugin-tailwindcss` for class sorting
 - `.prettierrc` and `.prettierignore` at repository root
 - `.eslintrc.js` at repository root
@@ -65,6 +88,7 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
 - `.gitignore` covering Node.js, Next.js, Turborepo, OS, and editor artifacts
 
 #### GitHub Repository Governance
+
 - **`LICENSE`** — MIT License (Copyright 2026 Rishikesh Palande)
 - **`README.md`** — Full project documentation including:
   - CI, CodeQL, license, Node, pnpm, TypeScript, Next.js, Turborepo, Tailwind, and PRs badges
@@ -100,6 +124,7 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
   - Automated tooling inventory (CodeQL, Dependabot, Secret Scanning, Branch Protection)
 
 #### GitHub Actions Workflows
+
 - **`ci.yml`** — Continuous Integration pipeline
   - Triggers on push and PR to `main` and `develop`
   - Concurrent run cancellation to avoid redundant builds
@@ -130,6 +155,7 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
   - Auto-clears failure comment when title is corrected
 
 #### GitHub Configuration Files
+
 - **`.github/CODEOWNERS`** — Automatic review assignment for all paths, with special entries for workflows and security files
 - **`.github/dependabot.yml`** — Automated dependency updates
   - 5 update targets: root, `apps/web`, `apps/widget`, `packages/ui`, GitHub Actions
@@ -156,5 +182,6 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
 
 ---
 
-[Unreleased]: https://github.com/RISHII7/echo/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/RISHII7/echo/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/RISHII7/echo/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/RISHII7/echo/releases/tag/v0.1.0
