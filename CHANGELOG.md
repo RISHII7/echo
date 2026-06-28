@@ -11,6 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.1] - 2026-06-28
+
+### Fixed
+
+- **CI: pnpm version conflict** — Removed hardcoded `PNPM_VERSION: "10.13.1"` env var
+  from `ci.yml`, `release.yml`, and `codeql.yml`. `pnpm/action-setup@v4` now reads the
+  version directly from `packageManager` in `package.json` (`pnpm@10.33.4`), eliminating
+  the `ERR_PNPM_BAD_PM_VERSION` error that caused all CI runs to fail on Setup pnpm step.
+- **CI: format-check command** — Replaced `pnpm format --check` (which incorrectly passed
+  `--check` to Turbo, an invalid flag) with `pnpm exec prettier --check` to invoke Prettier
+  directly, making the Format Check job functional.
+- **CI: Dependabot PR title failures** — Added `if: github.actor != 'dependabot[bot]'`
+  guard to `pr-title.yml` so Conventional Commits validation is skipped on automated
+  Dependabot PRs, which use their own title format.
+- **Formatting** — Applied Prettier auto-formatting across 18 files to satisfy the now-
+  working format-check CI job. No logic changes — whitespace, quotes, and trailing newlines only.
+
+---
+
 ## [0.1.0] - 2026-06-28
 
 ### Overview
@@ -163,5 +182,6 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
 
 ---
 
-[Unreleased]: https://github.com/RISHII7/echo/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/RISHII7/echo/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/RISHII7/echo/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/RISHII7/echo/releases/tag/v0.1.0
