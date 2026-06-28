@@ -86,20 +86,20 @@ The monorepo uses a **workspace dependency graph** where apps consume packages, 
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 16 (App Router) |
-| Language | TypeScript 5 |
-| UI Library | React 19 |
-| Styling | Tailwind CSS 4 |
-| Components | shadcn/ui + Radix UI |
-| Icons | Lucide React |
-| Monorepo | Turborepo 2 |
-| Package Manager | pnpm 10 |
-| Linting | ESLint 9 |
-| Formatting | Prettier 3 |
-| CI/CD | GitHub Actions |
-| Security | CodeQL + Dependabot |
+| Layer           | Technology              |
+| --------------- | ----------------------- |
+| Framework       | Next.js 16 (App Router) |
+| Language        | TypeScript 5            |
+| UI Library      | React 19                |
+| Styling         | Tailwind CSS 4          |
+| Components      | shadcn/ui + Radix UI    |
+| Icons           | Lucide React            |
+| Monorepo        | Turborepo 2             |
+| Package Manager | pnpm 10                 |
+| Linting         | ESLint 9                |
+| Formatting      | Prettier 3              |
+| CI/CD           | GitHub Actions          |
+| Security        | CodeQL + Dependabot     |
 
 ---
 
@@ -107,11 +107,11 @@ The monorepo uses a **workspace dependency graph** where apps consume packages, 
 
 ### Prerequisites
 
-| Tool | Version | Install |
-|---|---|---|
+| Tool    | Version      | Install                                            |
+| ------- | ------------ | -------------------------------------------------- |
 | Node.js | `>= 22.15.1` | [fnm](https://github.com/Schniz/fnm) (recommended) |
-| pnpm | `>= 10.13.1` | `npm install -g pnpm` |
-| Git | Latest | [git-scm.com](https://git-scm.com) |
+| pnpm    | `>= 10.13.1` | `npm install -g pnpm`                              |
+| Git     | Latest       | [git-scm.com](https://git-scm.com)                 |
 
 ### Installation
 
@@ -129,9 +129,9 @@ pnpm dev
 
 ### Environment Variables
 
-| Variable | Description | Required |
-|---|---|---|
-| `NEXT_PUBLIC_APP_URL` | Public URL of the web application | Yes |
+| Variable              | Description                       | Required |
+| --------------------- | --------------------------------- | -------- |
+| `NEXT_PUBLIC_APP_URL` | Public URL of the web application | Yes      |
 
 ---
 
@@ -153,32 +153,32 @@ pnpm --filter widget dev
 
 ### Branch Strategy
 
-| Branch | Purpose | Base |
-|---|---|---|
-| `main` | Production-ready code | — |
-| `develop` | Integration branch | `main` |
-| `feature/*` | New features | `develop` |
-| `fix/*` | Bug fixes | `develop` |
-| `hotfix/*` | Critical production patches | `main` |
-| `release/*` | Release preparation | `develop` |
-| `chore/*` | Maintenance tasks | `develop` |
+| Branch      | Purpose                     | Base      |
+| ----------- | --------------------------- | --------- |
+| `main`      | Production-ready code       | —         |
+| `develop`   | Integration branch          | `main`    |
+| `feature/*` | New features                | `develop` |
+| `fix/*`     | Bug fixes                   | `develop` |
+| `hotfix/*`  | Critical production patches | `main`    |
+| `release/*` | Release preparation         | `develop` |
+| `chore/*`   | Maintenance tasks           | `develop` |
 
 ### Commit Convention
 
 This project follows [Conventional Commits](https://www.conventionalcommits.org):
 
-| Type | Description |
-|---|---|
-| `feat` | A new feature |
-| `fix` | A bug fix |
-| `docs` | Documentation changes |
-| `style` | Formatting, no logic change |
-| `refactor` | Code refactor |
-| `perf` | Performance improvement |
-| `test` | Adding or updating tests |
-| `chore` | Build process, tooling |
-| `ci` | CI/CD configuration |
-| `revert` | Revert a previous commit |
+| Type       | Description                 |
+| ---------- | --------------------------- |
+| `feat`     | A new feature               |
+| `fix`      | A bug fix                   |
+| `docs`     | Documentation changes       |
+| `style`    | Formatting, no logic change |
+| `refactor` | Code refactor               |
+| `perf`     | Performance improvement     |
+| `test`     | Adding or updating tests    |
+| `chore`    | Build process, tooling      |
+| `ci`       | CI/CD configuration         |
+| `revert`   | Revert a previous commit    |
 
 ```bash
 git commit -m "feat(web): add user authentication flow"
@@ -218,6 +218,7 @@ echo/
 ## Packages
 
 ### `@workspace/ui`
+
 Shared component library built on shadcn/ui and Radix UI primitives.
 
 ```tsx
@@ -225,9 +226,11 @@ import { Button } from "@workspace/ui/components/button"
 ```
 
 ### `@workspace/eslint-config`
+
 Shared ESLint configurations: `base`, `next`, and `react-internal` presets.
 
 ### `@workspace/typescript-config`
+
 Shared `tsconfig.json` presets: `base`, `nextjs`, and `react-library`.
 
 ---

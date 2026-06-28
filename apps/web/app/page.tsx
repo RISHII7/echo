@@ -1,5 +1,5 @@
 import { Button } from "@workspace/ui/components/button"
-import  { add } from "@workspace/math/add";
+import { add } from "@workspace/math/add"
 
 export default function Page() {
   return (
