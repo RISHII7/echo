@@ -1,20 +1,16 @@
 "use client"
 
 import * as React from "react"
-import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { ConvexProvider, ConvexReactClient } from "convex/react"
 import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes"
 
-const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL || "");
+const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL || "")
 
 function ThemeProvider({
   children,
   ...props
 }: React.ComponentProps<typeof NextThemesProvider>) {
-  return (
-    <ConvexProvider client={convex}>
-      {children}
-    </ConvexProvider>
-  )
+  return <ConvexProvider client={convex}>{children}</ConvexProvider>
 }
 
 function isTypingTarget(target: EventTarget | null) {
