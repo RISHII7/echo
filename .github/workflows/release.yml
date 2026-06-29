@@ -77,6 +77,8 @@ jobs:
 
       - name: Build
         run: pnpm build
+        env:
+          NEXT_PUBLIC_CONVEX_URL: https://terrific-llama-923.convex.cloud
 
   release:
     name: Create GitHub Release
