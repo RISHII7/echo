@@ -13,6 +13,7 @@
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
 [![Turborepo](https://img.shields.io/badge/Turborepo-2-EF4444?logo=turborepo)](https://turbo.build)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38BDF8?logo=tailwindcss)](https://tailwindcss.com)
+[![Convex](https://img.shields.io/badge/Convex-backend-EE342F?logo=convex)](https://convex.dev)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 [Report Bug](https://github.com/RISHII7/echo/issues/new?template=bug_report.yml) · [Request Feature](https://github.com/RISHII7/echo/issues/new?template=feature_request.yml) · [Documentation](https://github.com/RISHII7/echo/wiki)
@@ -56,7 +57,8 @@ Echo is a production-ready, full-stack monorepo platform engineered for enterpri
 ## Features
 
 - **Monorepo Architecture** — Turborepo with remote caching, task pipelines, and workspace dependency graph
-- **Type Safety** — End-to-end TypeScript with strict mode across all packages
+- **Real-Time Backend** — Convex reactive database with live queries and server mutations
+- **Type Safety** — End-to-end TypeScript with strict mode and generated API types across all packages
 - **Design System** — Shared UI component library built on shadcn/ui and Radix primitives
 - **Performance** — Next.js Turbopack, React Server Components, and Tailwind CSS v4
 - **Code Quality** — ESLint 9, Prettier, and TypeScript strict checks enforced on every commit
@@ -74,13 +76,14 @@ echo/
 │   ├── web/          # Primary Next.js application
 │   └── widget/       # Embeddable widget application
 ├── packages/
+│   ├── backend/      # Convex real-time backend (schema + server functions)
 │   ├── ui/           # Shared component library
 │   ├── math/         # Shared utilities
 │   ├── eslint-config/       # Shared ESLint configuration
 │   └── typescript-config/   # Shared TypeScript configuration
 ```
 
-The monorepo uses a **workspace dependency graph** where apps consume packages, and packages can depend on other packages. Turborepo ensures tasks run in topological order with caching at every layer.
+The monorepo uses a **workspace dependency graph** where apps consume packages, and packages can depend on other packages. Turborepo ensures tasks run in topological order with caching at every layer. The `@workspace/backend` package provides a shared Convex client that both apps import for real-time data access.
 
 ---
 
@@ -93,6 +96,7 @@ The monorepo uses a **workspace dependency graph** where apps consume packages, 
 | UI Library      | React 19                |
 | Styling         | Tailwind CSS 4          |
 | Components      | shadcn/ui + Radix UI    |
+| Backend         | Convex (real-time DB)   |
 | Icons           | Lucide React            |
 | Monorepo        | Turborepo 2             |
 | Package Manager | pnpm 10                 |
@@ -129,9 +133,19 @@ pnpm dev
 
 ### Environment Variables
 
-| Variable              | Description                       | Required |
-| --------------------- | --------------------------------- | -------- |
-| `NEXT_PUBLIC_APP_URL` | Public URL of the web application | Yes      |
+Create `apps/web/.env.local` and `apps/widget/.env.local` with the following:
+
+| Variable                 | Description                       | Required |
+| ------------------------ | --------------------------------- | -------- |
+| `NEXT_PUBLIC_CONVEX_URL` | Convex deployment URL             | Yes      |
+| `NEXT_PUBLIC_APP_URL`    | Public URL of the web application | No       |
+
+To get your `NEXT_PUBLIC_CONVEX_URL`, run `pnpm --filter backend dev` and copy the deployment URL from the Convex dashboard, or from `packages/backend/.env.local` after the first `convex dev` run.
+
+```bash
+# apps/web/.env.local
+NEXT_PUBLIC_CONVEX_URL=https://<your-deployment>.convex.cloud
+```
 
 ---
 
@@ -140,15 +154,16 @@ pnpm dev
 ### Commands
 
 ```bash
-pnpm dev          # Start all apps in development mode
-pnpm build        # Build all packages and apps
-pnpm lint         # Run linting across all workspaces
-pnpm typecheck    # Run type checking across all workspaces
-pnpm format       # Format all files with Prettier
+pnpm dev              # Start all apps in development mode (Next.js + Convex)
+pnpm build            # Build all packages and apps
+pnpm lint             # Run linting across all workspaces
+pnpm typecheck        # Run type checking across all workspaces
+pnpm format           # Format all files with Prettier
 
-# Target a specific app
+# Target a specific workspace
 pnpm --filter web dev
 pnpm --filter widget dev
+pnpm --filter backend dev   # Start Convex dev server only
 ```
 
 ### Branch Strategy
@@ -202,6 +217,11 @@ echo/
 │   ├── web/                     # Next.js web application
 │   └── widget/                  # Embeddable widget
 ├── packages/
+│   ├── backend/                 # Convex real-time backend
+│   │   └── convex/
+│   │       ├── _generated/      # Auto-generated TypeScript API types
+│   │       ├── schema.ts        # Database schema definitions
+│   │       └── users.ts         # User query & mutation functions
 │   ├── ui/                      # Shared component library
 │   ├── math/                    # Shared utilities
 │   ├── eslint-config/           # ESLint config presets
@@ -216,6 +236,26 @@ echo/
 ---
 
 ## Packages
+
+### `@workspace/backend`
+
+Convex real-time backend package. Provides the database schema and server functions, with auto-generated TypeScript types for end-to-end type safety.
+
+```tsx
+import { api } from "@workspace/backend/_generated/api"
+import { useQuery, useMutation } from "convex/react"
+
+const users = useQuery(api.users.getMany)
+const addUser = useMutation(api.users.add)
+```
+
+To start the Convex dev server:
+
+```bash
+pnpm --filter backend dev
+# or from repo root:
+pnpm dev  # starts all apps including Convex
+```
 
 ### `@workspace/ui`
 

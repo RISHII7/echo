@@ -11,6 +11,73 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.0] - 2026-06-29
+
+### Overview
+
+This release integrates **Convex** as the real-time backend for the Echo monorepo.
+A new `@workspace/backend` package encapsulates all Convex schema definitions and
+server-side functions, and both `apps/web` and `apps/widget` are wired to the live
+Convex deployment via `ConvexProvider` and the generated TypeScript API.
+
+---
+
+### Added
+
+#### `packages/backend` — New Convex workspace package
+
+- Scaffolded `@workspace/backend` as a dedicated Convex workspace package
+- `convex/schema.ts` — database schema with a `users` table (`name: string`) defined
+  using Convex's `defineSchema` and `defineTable` helpers
+- `convex/users.ts` — two server functions:
+  - `getMany` — `query` that fetches all users from the database
+  - `add` — `mutation` that inserts a new user record (`name: "RISHII"`)
+- `convex/_generated/` — committed auto-generated TypeScript API types (`api.d.ts`,
+  `api.js`, `dataModel.d.ts`, `server.d.ts`, `server.js`) for full type safety across
+  the monorepo without requiring a running Convex dev server in CI
+- `package.json` — workspace package definition (`name: @workspace/backend`,
+  `convex: ^1.42.0` runtime dependency, `dev` and `setup` scripts)
+- `tsconfig.json` — TypeScript configuration extending `@workspace/typescript-config`
+- `.gitignore` — excludes `.env.local` (contains deployment secrets)
+- `convex/README.md` — Convex-generated quickstart guide (excluded from Prettier)
+
+#### Convex client integration in `apps/web` and `apps/widget`
+
+- Added `@workspace/backend: workspace:*` and `convex: ^1.42.0` to both app
+  `package.json` files
+- Added `@workspace/backend/*` TypeScript path alias in both `tsconfig.json` files,
+  pointing to `packages/backend/convex/*` for generated API type imports
+- `components/theme-provider.tsx` — replaced static `NextThemesProvider` wrapper with
+  `ConvexProvider` backed by `ConvexReactClient`, reading from `NEXT_PUBLIC_CONVEX_URL`
+  environment variable
+- `app/page.tsx` — replaced static math function demo with live Convex hooks:
+  - `useQuery(api.users.getMany)` — subscribes to real-time user list
+  - `useMutation(api.users.add)` — triggers user insertion via a button click
+
+#### CI/tooling improvements
+
+- Added `NEXT_PUBLIC_CONVEX_URL` environment variable to the `build` step in
+  `ci.yml`, `release.yml`, and `codeql.yml` — required for `ConvexReactClient`
+  to initialise with a valid URL during `next build` in CI environments
+- Added `packages/backend/convex/_generated/` and `packages/backend/convex/README.md`
+  to `.prettierignore` — auto-generated files should not be subject to formatting rules
+
+---
+
+### Technical Decisions
+
+- **`convex/_generated/` committed to source control** — Generated API types provide
+  full TypeScript safety across the monorepo without requiring every developer to run
+  `convex dev` before getting type completions. Files are excluded from Prettier.
+- **`ConvexProvider` in theme-provider** — Centralises the Convex client provider at
+  the layout level so all pages and components have access to real-time hooks without
+  additional wrapper boilerplate.
+- **`NEXT_PUBLIC_CONVEX_URL` as build-time env** — Convex's React client requires a
+  valid URL at module initialisation; adding it to CI workflows prevents static page
+  prerender failures in environments where `.env.local` is not present.
+
+---
+
 ## [0.1.1] - 2026-06-28
 
 ### Fixed
@@ -182,6 +249,7 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
 
 ---
 
-[Unreleased]: https://github.com/RISHII7/echo/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/RISHII7/echo/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/RISHII7/echo/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/RISHII7/echo/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/RISHII7/echo/releases/tag/v0.1.0
