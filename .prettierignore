@@ -5,3 +5,6 @@ node_modules/
 coverage/
 pnpm-lock.yaml
 .pnpm-store/
+# Convex auto-generated files
+packages/backend/convex/_generated/
+packages/backend/convex/README.md
