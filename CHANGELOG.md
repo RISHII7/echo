@@ -11,6 +11,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.5.0] - 2026-07-01
+
+### Overview
+
+This release adds **Sentry** error monitoring and performance tracing to `apps/web`,
+covering client, server, and edge runtimes, plus session replay on error.
+
+---
+
+### Added
+
+#### Sentry integration — `apps/web`
+
+- **`@sentry/nextjs ^10.62.0`** added to `apps/web` dependencies
+- **`instrumentation.ts`** — Next.js instrumentation hook; loads `sentry.server.config`
+  or `sentry.edge.config` based on `NEXT_RUNTIME`, and exports `onRequestError` for
+  server-side error capture
+- **`instrumentation-client.ts`** — client-side Sentry init with `replayIntegration`,
+  trace sampling, session replay (10% normal, 100% on error), and router transition
+  tracking via `onRouterTransitionStart`
+- **`sentry.server.config.ts`** / **`sentry.edge.config.ts`** — runtime-specific Sentry
+  init for the Node.js and edge runtimes, with logging and PII enabled
+- **`app/global-error.tsx`** — root error boundary that reports uncaught errors to
+  Sentry via `Sentry.captureException` before rendering the default Next.js error page
+- **`app/sentry-example-page/`** and **`app/api/sentry-example-api/`** — Sentry's
+  example test page and API route for verifying the integration end-to-end (frontend
+  - backend error capture, span tracing, connectivity diagnostics)
+- **`next.config.ts`** — wrapped with `withSentryConfig`; uploads source maps in CI,
+  tunnels client requests through `/monitoring` to bypass ad-blockers, and enables
+  automatic Vercel Cron Monitor instrumentation
+- **`.npmrc`** — added `public-hoist-pattern` entries for `import-in-the-middle` and
+  `require-in-the-middle`, required by Sentry's OpenTelemetry-based auto-instrumentation
+  under pnpm's strict node_modules layout
+- **`.mcp.json`** — Sentry MCP server config for `apps/web`, enabling Sentry tools
+  (issue lookup, event search) directly from the editor
+- **`.gitignore`** — excludes `.env.sentry-build-plugin` (local Sentry auth token for
+  source map uploads)
+
+#### Tooling
+
+- **`turbo.json`** — declared `NEXT_RUNTIME` and `CI` as build-task env var
+  dependencies, fixing `turbo/no-undeclared-env-vars` lint warnings introduced by the
+  Sentry instrumentation and config files
+
+---
+
+### Technical Decisions
+
+- **DSN hardcoded in client config** — Sentry DSNs are public identifiers by design
+  (not secrets), safe to commit directly in `instrumentation-client.ts`,
+  `sentry.server.config.ts`, and `sentry.edge.config.ts`.
+- **Source maps uploaded only in CI** — `silent: !process.env.CI` in `next.config.ts`
+  keeps local builds quiet while still uploading readable stack traces from CI builds.
+- **`tunnelRoute: "/monitoring"`** — routes client-side error reports through the
+  Next.js server first, avoiding ad-blockers that block direct requests to Sentry's
+  ingest endpoint.
+
+---
+
 ## [0.4.1] - 2026-07-01
 
 ### Fixed
@@ -452,7 +511,8 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
 
 ---
 
-[Unreleased]: https://github.com/RISHII7/echo/compare/v0.4.1...HEAD
+[Unreleased]: https://github.com/RISHII7/echo/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/RISHII7/echo/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/RISHII7/echo/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/RISHII7/echo/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/RISHII7/echo/compare/v0.2.0...v0.3.0
