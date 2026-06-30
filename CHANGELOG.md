@@ -11,6 +11,99 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.0] - 2026-07-01
+
+### Overview
+
+This release adds **Clerk Organizations** support and refactors the auth layer into a
+module-based architecture under `apps/web/modules/`. Authentication and organization
+membership are now enforced at the layout level via reusable guard components, and all
+auth views are isolated into purpose-built view modules rather than living directly in
+the app directory.
+
+---
+
+### Added
+
+#### Clerk Organizations
+
+- **`app/(auth)/org-selection/[[...org-selection]]/page.tsx`** — catch-all page for
+  the Clerk organization selection flow; renders `OrgSelectionView`
+- **`modules/auth/ui/views/org-selection-view/index.tsx`** — `OrgSelectionView` wrapping
+  Clerk's `<OrganizationList>` with `hidePersonal`, `skipInvitationScreen`, and
+  post-selection redirect to `/`
+- **`modules/auth/ui/components/organization-guard/index.tsx`** — `OrganizationGuard`
+  client component; uses `useOrganization()` from `@clerk/nextjs` to detect whether the
+  current user has an active organization. Renders `OrgSelectionView` within `AuthLayout`
+  when no organization is selected, otherwise renders children
+
+#### Module-based auth architecture — `apps/web/modules/`
+
+- **`modules/auth/ui/layouts/auth-layout/index.tsx`** — `AuthLayout` component; full-screen
+  centered wrapper for all auth pages
+- **`modules/auth/ui/views/sign-in-view/index.tsx`** — `SignInView` rendering
+  `<SignIn routing="hash" />` (hash routing prevents full-page navigations on multi-step flows)
+- **`modules/auth/ui/views/sign-up-view/index.tsx`** — `SignUpView` rendering
+  `<SignUp routing="hash" />`
+- **`modules/auth/ui/components/auth-guard/index.tsx`** — `AuthGuard` client component;
+  uses Convex `<Authenticated>`, `<Unauthenticated>`, and `<AuthLoading>` guards to
+  conditionally render children, a loading state, or the `SignInView` without redirecting
+
+#### Dashboard layout with guard composition
+
+- **`app/(dashboard)/layout.tsx`** — layout for all dashboard routes; composes
+  `<AuthGuard>` (Convex session check) wrapping `<OrganizationGuard>` (Clerk org check)
+  so both conditions must be satisfied before any dashboard page renders
+- **`app/(dashboard)/page.tsx`** — dashboard home; shows `<UserButton />`,
+  `<OrganizationSwitcher hidePersonal />`, Convex `useQuery`/`useMutation` for the users
+  table, and an Add button
+
+---
+
+### Changed
+
+#### Auth pages refactored to module views
+
+- **`app/(auth)/layout.tsx`** — replaced inline centering div with `<AuthLayout>` from
+  modules, centralising auth page layout in one place
+- **`app/(auth)/sign-in/[[...sign-in]]/page.tsx`** — replaced inline `<SignIn />` with
+  `<SignInView />` from modules
+- **`app/(auth)/sign-up/[[...sign-up]]/page.tsx`** — replaced inline `<SignUp />` with
+  `<SignUpView />` from modules
+
+#### Middleware — org redirect logic
+
+- **`proxy.ts`** — extended `clerkMiddleware` with organization enforcement:
+  - Added `isOrgFreeRoute` matcher covering `/sign-in(.*)`, `/sign-up(.*)`,
+    `/org-selection(.*)`
+  - After auth protection, authenticated users without an active `orgId` are redirected
+    to `/org-selection?redirectUrl=<original>` unless they are already on an org-free route
+
+#### Dashboard page replaces old app root
+
+- **`app/page.tsx`** — deleted; the application root is now `app/(dashboard)/page.tsx`
+  inside the `(dashboard)` route group. The `/` URL maps to the dashboard after auth
+  and org guards pass.
+
+---
+
+### Technical Decisions
+
+- **Module-based architecture over flat app directory** — co-locating views, layouts, and
+  guard components under `modules/auth/ui/` makes each auth concern independently testable
+  and keeps the app directory as a thin routing layer.
+- **`routing="hash"` on Clerk components** — prevents Clerk's multi-step sign-in/sign-up
+  flows from triggering full Next.js navigations; state is tracked in the URL hash instead.
+- **Guard composition at layout level** — `AuthGuard` + `OrganizationGuard` in
+  `(dashboard)/layout.tsx` means every dashboard route automatically inherits both
+  protection layers without per-page checks.
+- **Middleware redirect vs. guard-only** — the `proxy.ts` redirect handles the server-side
+  case (direct URL navigation without a Clerk session context in React), while
+  `OrganizationGuard` handles the client-side case (org changed or deselected after page
+  load).
+
+---
+
 ## [0.3.0] - 2026-06-30
 
 ### Overview
@@ -337,7 +430,8 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
 
 ---
 
-[Unreleased]: https://github.com/RISHII7/echo/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/RISHII7/echo/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/RISHII7/echo/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/RISHII7/echo/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/RISHII7/echo/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/RISHII7/echo/compare/v0.1.0...v0.1.1
