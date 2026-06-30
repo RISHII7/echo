@@ -41,6 +41,7 @@ jobs:
             widget
             ui
             math
+            backend
             eslint-config
             typescript-config
             deps
