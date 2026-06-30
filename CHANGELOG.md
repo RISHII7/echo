@@ -11,6 +11,94 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.3.0] - 2026-06-30
+
+### Overview
+
+This release integrates **Clerk** as the authentication provider for `apps/web`,
+wired directly into the Convex real-time backend via `ConvexProviderWithClerk`.
+Authentication is enforced at both the UI layer (Next.js 16 proxy middleware) and
+the backend layer (Convex mutation identity checks).
+
+---
+
+### Added
+
+#### Clerk authentication — `apps/web`
+
+- **`@clerk/nextjs ^7.5.9`** added to `apps/web` dependencies
+- **`app/layout.tsx`** — `ClerkProvider` wraps the entire application, providing
+  Clerk session context to all pages and components
+- **`proxy.ts`** (Next.js 16 middleware filename) — `clerkMiddleware()` protects all
+  routes by default; public routes `/sign-in(.*)` and `/sign-up(.*)` are exempt
+- **`app/(auth)/layout.tsx`** — centered layout for all auth pages
+- **`app/(auth)/sign-in/[[...sign-in]]/page.tsx`** — Clerk hosted `<SignIn />` component
+  with catch-all routing for multi-step sign-in flows
+- **`app/(auth)/sign-up/[[...sign-up]]/page.tsx`** — Clerk hosted `<SignUp />` component
+  with catch-all routing for multi-step sign-up flows
+- **`app/page.tsx`** — `<Authenticated>` / `<Unauthenticated>` guards from Convex;
+  authenticated view shows `<UserButton />` and the Add user mutation button;
+  unauthenticated view shows `<SignInButton />`
+
+#### Convex + Clerk session bridging
+
+- **`components/theme-provider.tsx`** — replaced bare `ConvexProvider` with
+  `ConvexProviderWithClerk` (from `convex/react-clerk`), passing `useAuth` from
+  `@clerk/nextjs` so Convex automatically includes the active Clerk JWT in all
+  function calls. Removed dead `ThemeHotkey`, `isTypingTarget`, `NextThemesProvider`,
+  and `useTheme` code that was leftover from the previous provider setup.
+
+#### Convex backend auth hardening — `packages/backend`
+
+- **`convex/auth.config.ts`** — Clerk JWT provider configuration; reads
+  `CLERK_JWT_ISSUER_DOMAIN` from the Convex Dashboard environment. Uses
+  `/// <reference types="node" />` because this file runs in Node.js (Convex CLI),
+  not the V8 function isolate runtime.
+- **`convex/users.ts`** — `add` mutation now calls `ctx.auth.getUserIdentity()` and
+  throws `"Not Authenticated"` for unauthenticated callers, preventing anonymous
+  writes to the users table.
+- **`package.json`** — added `@types/node ^20.19.41` dev dependency
+
+---
+
+### Fixed
+
+- **`packages/backend/tsconfig.json`** — removed deprecated `baseUrl` compiler option.
+  In TypeScript 5+, `paths` does not require `baseUrl` to be set; the option was
+  flagged as deprecated in TS 5.0 and will stop functioning in TS 7.0.
+
+---
+
+### Changed
+
+- **`apps/widget/components/theme-provider.tsx`** — removed dead `ThemeHotkey`,
+  `isTypingTarget`, `NextThemesProvider`, and `useTheme` code, matching the cleanup
+  done in `apps/web`.
+
+#### CI/tooling
+
+- `ci.yml`, `release.yml`, `codeql.yml` — `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` added
+  to the build step environment, reading from the `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+  GitHub repository variable. This prevents `ClerkProvider` from throwing during
+  `next build` in CI environments where `.env.local` is absent.
+
+---
+
+### Technical Decisions
+
+- **`ConvexProviderWithClerk` over manual token injection** — Convex's official Clerk
+  integration handles token refresh, expiry, and re-auth automatically. Manual token
+  passing would require re-implementing this logic.
+- **Middleware-level route protection** — protecting routes at the `proxy.ts` layer
+  means unauthenticated users are redirected before any page code runs, not just
+  hidden by client-side conditionals.
+- **`ctx.auth.getUserIdentity()` in mutations** — server-side auth checks are the last
+  line of defence; even if middleware is bypassed, mutations reject unauthenticated calls.
+- **`proxy.ts` (not `middleware.ts`)** — Next.js 16 renamed the middleware file from
+  `middleware.ts` to `proxy.ts`. The code API is identical; only the filename changed.
+
+---
+
 ## [0.2.0] - 2026-06-29
 
 ### Overview
@@ -249,7 +337,8 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
 
 ---
 
-[Unreleased]: https://github.com/RISHII7/echo/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/RISHII7/echo/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/RISHII7/echo/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/RISHII7/echo/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/RISHII7/echo/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/RISHII7/echo/releases/tag/v0.1.0
