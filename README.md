@@ -59,6 +59,7 @@ Echo is a production-ready, full-stack monorepo platform engineered for enterpri
 
 - **Monorepo Architecture** — Turborepo with remote caching, task pipelines, and workspace dependency graph
 - **Authentication** — Clerk with hosted sign-in/sign-up UI, session management, and middleware-level route protection
+- **Organizations** — Clerk multi-tenant organizations with org-selection flow, guard-based enforcement, and `OrganizationSwitcher`
 - **Real-Time Backend** — Convex reactive database with live queries and server mutations, bridged to Clerk sessions
 - **Type Safety** — End-to-end TypeScript with strict mode and generated API types across all packages
 - **Design System** — Shared UI component library built on shadcn/ui and Radix primitives
@@ -75,17 +76,19 @@ Echo is a production-ready, full-stack monorepo platform engineered for enterpri
 ```
 echo/
 ├── apps/
-│   ├── web/          # Primary Next.js application
-│   └── widget/       # Embeddable widget application
+│   ├── web/                 # Primary Next.js application
+│   │   └── modules/
+│   │       └── auth/        # Auth feature module (views, layouts, guards)
+│   └── widget/              # Embeddable widget application
 ├── packages/
-│   ├── backend/      # Convex real-time backend (schema + server functions)
-│   ├── ui/           # Shared component library
-│   ├── math/         # Shared utilities
+│   ├── backend/             # Convex real-time backend (schema + server functions)
+│   ├── ui/                  # Shared component library
+│   ├── math/                # Shared utilities
 │   ├── eslint-config/       # Shared ESLint configuration
 │   └── typescript-config/   # Shared TypeScript configuration
 ```
 
-The monorepo uses a **workspace dependency graph** where apps consume packages, and packages can depend on other packages. Turborepo ensures tasks run in topological order with caching at every layer. The `@workspace/backend` package provides a shared Convex client that both apps import for real-time data access.
+The monorepo uses a **workspace dependency graph** where apps consume packages, and packages can depend on other packages. Turborepo ensures tasks run in topological order with caching at every layer. The `@workspace/backend` package provides a shared Convex client that both apps import for real-time data access. Feature modules under `apps/web/modules/` isolate domain logic (views, layouts, guards) from the Next.js app directory routing layer.
 
 ---
 
@@ -228,6 +231,11 @@ echo/
 │   └── PULL_REQUEST_TEMPLATE.md
 ├── apps/
 │   ├── web/                     # Next.js web application
+│   │   ├── app/
+│   │   │   ├── (auth)/          # Auth route group (sign-in, sign-up, org-selection)
+│   │   │   └── (dashboard)/     # Dashboard route group (auth + org guarded)
+│   │   └── modules/
+│   │       └── auth/ui/         # Auth views, layouts, and guard components
 │   └── widget/                  # Embeddable widget
 ├── packages/
 │   ├── backend/                 # Convex real-time backend
