@@ -79,6 +79,7 @@ jobs:
         run: pnpm build
         env:
           NEXT_PUBLIC_CONVEX_URL: https://terrific-llama-923.convex.cloud
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ vars.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
 
   release:
     name: Create GitHub Release
