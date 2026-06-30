@@ -11,6 +11,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.1] - 2026-07-01
+
+### Fixed
+
+#### Convex backend — `packages/backend`
+
+- **`convex/users.ts`** — `add` mutation now reads `identity.orgId` after the
+  existing `getUserIdentity()` check and throws `"Missing organization"` when the
+  caller has no active Clerk organization. Completes the three-layer org enforcement
+  introduced in v0.4.0:
+  1. `proxy.ts` middleware redirect (server, before page load)
+  2. `OrganizationGuard` component (client, at layout level)
+  3. Convex mutation check (server, at data layer) ← added here
+
+#### CI
+
+- **`.github/workflows/pr-title.yml`** — added `backend` to the allowed PR title
+  scopes so that commits targeting `packages/backend` can use the `(backend)` scope
+  in Conventional Commits format
+
+---
+
 ## [0.4.0] - 2026-07-01
 
 ### Overview
@@ -430,7 +452,8 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
 
 ---
 
-[Unreleased]: https://github.com/RISHII7/echo/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/RISHII7/echo/compare/v0.4.1...HEAD
+[0.4.1]: https://github.com/RISHII7/echo/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/RISHII7/echo/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/RISHII7/echo/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/RISHII7/echo/compare/v0.1.1...v0.2.0
