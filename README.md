@@ -62,9 +62,10 @@ Echo is a production-ready, full-stack monorepo platform engineered for enterpri
 - **Authentication** — Clerk with hosted sign-in/sign-up UI, session management, and middleware-level route protection
 - **Organizations** — Clerk multi-tenant organizations with org-selection flow, guard-based enforcement, and `OrganizationSwitcher`
 - **Real-Time Backend** — Convex reactive database with live queries and server mutations, bridged to Clerk sessions
+- **Dashboard Layout** — Sidebar-driven layout with cookie-persisted collapse state, Clerk `OrganizationSwitcher` / `UserButton`, icon-collapse mode, and active-route detection
 - **Voice AI** — Vapi AI SDK integration in the widget app with real-time call state, speech events, and live transcript
 - **Type Safety** — End-to-end TypeScript with strict mode and generated API types across all packages
-- **Design System** — Shared UI component library built on shadcn/ui and Radix primitives
+- **Design System** — Shared UI component library with 40+ shadcn/ui components built on Radix primitives
 - **Performance** — Next.js Turbopack, React Server Components, and Tailwind CSS v4
 - **Code Quality** — ESLint 9, Prettier, and TypeScript strict checks enforced on every commit
 - **Error Monitoring** — Sentry across client, server, and edge runtimes with session replay and tracing
@@ -81,7 +82,8 @@ echo/
 ├── apps/
 │   ├── web/                 # Primary Next.js application
 │   │   └── modules/
-│   │       └── auth/        # Auth feature module (views, layouts, guards)
+│   │       ├── auth/        # Auth feature module (views, layouts, guards)
+│   │       └── dashboard/   # Dashboard feature module (layout, sidebar)
 │   └── widget/              # Embeddable widget application (Vapi AI voice)
 │       └── modules/
 │           └── widget/      # Widget feature module (hooks)
