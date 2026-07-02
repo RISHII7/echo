@@ -9,6 +9,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Widget auth screen — `apps/widget/modules/widget/ui/screens/widget-auth-screen/`
+
+- **`index.tsx`** — `WidgetAuthScreen` client component; name + email form backed by
+  `react-hook-form` with `zodResolver`; on submit collects full browser metadata
+  (`userAgent`, `language`, `platform`, `vendor`, `screenResolution`, `viewportSize`,
+  `timezone`, `timezoneOffset`, `cookieEnabled`, `referrer`, `currentUrl`) and calls
+  `createContactSession` Convex mutation; header renders `WidgetHeader` with greeting
+  ("Hi there! 👋 Let's get you started")
+
+#### Contact sessions — `packages/backend/convex/`
+
+- **`public/contactSessions.ts`** — `create` Convex mutation: accepts `name`,
+  `email`, `organizationId`, and optional `metadata`; sets a 24-hour expiry
+  (`SESSION_DURATION_MS = 24 * 60 * 60 * 1000`) and inserts into the
+  `contactSessions` table; returns the new document ID
+- **`schema.ts`** — `contactSessions` table added with fields: `name`, `email`,
+  `organizationId`, `expiresAt`, and optional `metadata` object (12 browser
+  environment properties); indexes: `by_organization_id` and `by_expires_at`
+
+#### UI — `packages/ui/src/components/form.tsx`
+
+- shadcn/ui `Form` component added: wraps `react-hook-form` `FormProvider` with
+  `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormDescription`,
+  `FormMessage` — accessible, slot-based form primitives with error-state styling
+
 #### Widget UI module — `apps/widget/modules/widget/ui/`
 
 - **`views/widget-view/index.tsx`** — `WidgetView` client component; full-viewport
@@ -50,6 +75,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   three sidebar nav groups (Customer Support, Configuration, Account)
 
 ### Changed
+
+#### Widget view — `apps/widget/modules/widget/ui/views/widget-view/index.tsx`
+
+- Replaced `WidgetHeader` + body + `WidgetFooter` composition with `<WidgetAuthScreen />`
+  as the first screen shown to unauthenticated widget visitors
+
+#### Widget footer — `apps/widget/modules/widget/ui/components/widget-footer/index.tsx`
+
+- Simplified `InboxIcon` — removed premature active-state logic; icon styling
+  will be driven by screen-routing state in a future release
+
+#### Widget dependencies — `apps/widget/package.json`
+
+- Added `react-hook-form ^7.80.0`, `zod ^3.25.76`, `@hookform/resolvers ^3.10.0`
+  (v3 line used to match zod v3; v5 resolver requires the zod v4 sub-path export)
 
 #### Vapi integration — `apps/widget/modules/widget/hooks/use-vapi.ts`
 
