@@ -63,6 +63,7 @@ Echo is a production-ready, full-stack monorepo platform engineered for enterpri
 - **Organizations** — Clerk multi-tenant organizations with org-selection flow, guard-based enforcement, and `OrganizationSwitcher`
 - **Real-Time Backend** — Convex reactive database with live queries and server mutations, bridged to Clerk sessions
 - **Dashboard Layout** — Sidebar-driven layout with cookie-persisted collapse state, Clerk `OrganizationSwitcher` / `UserButton`, icon-collapse mode, and active-route detection
+- **Voice AI** — Vapi AI SDK integration in the widget app with real-time call state, speech events, and live transcript
 - **Type Safety** — End-to-end TypeScript with strict mode and generated API types across all packages
 - **Design System** — Shared UI component library with 40+ shadcn/ui components built on Radix primitives
 - **Performance** — Next.js Turbopack, React Server Components, and Tailwind CSS v4
@@ -110,6 +111,7 @@ The monorepo uses a **workspace dependency graph** where apps consume packages, 
 | Auth            | Clerk                   |
 | Backend         | Convex (real-time DB)   |
 | Monitoring      | Sentry                  |
+| Voice AI        | Vapi AI                 |
 | Icons           | Lucide React            |
 | Monorepo        | Turborepo 2             |
 | Package Manager | pnpm 10                 |

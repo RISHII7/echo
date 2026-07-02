@@ -118,6 +118,71 @@ New peer dependencies added to `apps/web`:
 
 ---
 
+## [0.5.1] - 2026-07-01
+
+### Overview
+
+This release adds **Vapi AI** voice call integration to `apps/widget`, enabling
+real-time voice conversations powered by a VapiBank phone support demo agent.
+
+---
+
+### Added
+
+#### Vapi AI voice integration — `apps/widget`
+
+- **`@vapi-ai/web ^2.5.2`** added to `apps/widget` dependencies
+- **`modules/widget/hooks/use-vapi.ts`** — `useVapi` custom React hook that wraps
+  the `@vapi-ai/web` SDK with fully managed React state:
+  - `isConnected` / `isConnecting` / `isSpeaking` — granular call phase tracking
+  - `transcript` — accumulated `TranscriptMessage[]` array built from final
+    transcript events (`message.transcriptType === "final"`)
+  - Event subscriptions: `call-start`, `call-end`, `speech-start`, `speech-end`,
+    `error`, `message`; Vapi instance torn down in useEffect cleanup (`vapiInstance.stop()`)
+  - Exposes `startCall()` and `endCall()` actions for the UI layer
+- **`app/page.tsx`** — widget home replaced with Vapi call UI: "Start call" and
+  "End call" (destructive variant) buttons, live `isConnected` / `isConnecting` /
+  `isSpeaking` indicators, and a live transcript panel using `JSON.stringify`
+
+#### VapiBank demo assets — `assets/VAPI/`
+
+- **`system-prompt.txt`** — system prompt for **Tom**, VapiBank's 24/7 phone
+  support voice assistant (identity, conversation flow, tool usage, style guidelines,
+  edge cases)
+- **`accounts.csv`** — mock account data (`account_id`, `name`, `phone_last4`,
+  `balance`, `card_status`, `email`)
+- **`transactions.csv`** — mock transaction history for all demo accounts
+- **`lookup-account.txt`** — tool definition: verifies caller identity by last 4
+  digits of phone number
+- **`balance-tool.txt`** — tool definition: retrieves current balance for a
+  verified account
+- **`recent-transactions.txt`** — tool definition: retrieves recent transaction
+  history for a verified account
+- **`first-message.txt`** — opening greeting script for Tom
+
+---
+
+### Changed
+
+#### Widget home page
+
+- **`apps/widget/app/page.tsx`** — replaced the Convex users query/mutation test
+  UI with the Vapi voice call interface. The widget app is now purpose-built for
+  the voice assistant demo rather than a generic data test harness.
+
+---
+
+### Technical Decisions
+
+- **`useVapi` hook isolation** — all Vapi SDK concerns (event subscription, instance
+  lifecycle, state management) are encapsulated in the hook, keeping the page
+  component a thin UI layer with no direct SDK imports.
+- **Assets in repo** — the `assets/VAPI/` directory holds the VapiBank demo
+  configuration (prompts, tool definitions, mock data) alongside the code so the
+  assistant setup is reproducible without external documentation.
+
+---
+
 ## [0.5.0] - 2026-07-01
 
 ### Overview
