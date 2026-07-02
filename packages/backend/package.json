@@ -14,6 +14,6 @@
     "typescript": "latest"
   },
   "dependencies": {
-    "convex": "^1.42.0"
+    "convex": "^1.42.1"
   }
 }
