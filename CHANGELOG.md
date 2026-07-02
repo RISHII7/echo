@@ -9,6 +9,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Widget state management — `apps/widget/modules/widget/`
+
+- **`constants/index.ts`** — `WIDGET_SCREENS` as-const tuple defining all 8 widget
+  screen states: `"error"`, `"loading"`, `"selection"`, `"voice"`, `"auth"`,
+  `"inbox"`, `"chat"`, `"contact"`; also exports `CONTACT_SESSION_KEY =
+"echo_contact_session"` for local storage keying
+- **`types/index.ts`** — `WidgetScreen` type derived from `typeof WIDGET_SCREENS[number]`;
+  single source of truth — adding a screen to the constant automatically extends the type
+- **`atoms/widget-atoms/index.ts`** — `screenAtom = atom<WidgetScreen>("auth")` — Jotai
+  atom managing the currently active widget screen; initial state is `"auth"` so
+  unauthenticated visitors land on the contact form
+- **`jotai ^2.20.1`** added to `apps/widget` dependencies
+
+#### Providers — `apps/widget/components/theme-provider.tsx`
+
+- Wrapped widget children with Jotai `<Provider>` inside `<ConvexProvider>` so
+  all widget components share the same atom store
+
+### Changed
+
+#### Widget view — `apps/widget/modules/widget/ui/views/widget-view/index.tsx`
+
+- Replaced static `<WidgetAuthScreen />` with a screen-routing map driven by
+  `useAtomValue(screenAtom)`; maps all 8 `WidgetScreen` values to components
+  (stubs in place for `error`, `loading`, `selection`, `voice`, `inbox`, `chat`,
+  `contact`; `auth` renders `<WidgetAuthScreen />`)
+
+---
+
 #### Widget auth screen — `apps/widget/modules/widget/ui/screens/widget-auth-screen/`
 
 - **`index.tsx`** — `WidgetAuthScreen` client component; name + email form backed by
