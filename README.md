@@ -62,8 +62,9 @@ Echo is a production-ready, full-stack monorepo platform engineered for enterpri
 - **Authentication** — Clerk with hosted sign-in/sign-up UI, session management, and middleware-level route protection
 - **Organizations** — Clerk multi-tenant organizations with org-selection flow, guard-based enforcement, and `OrganizationSwitcher`
 - **Real-Time Backend** — Convex reactive database with live queries and server mutations, bridged to Clerk sessions
+- **Dashboard Layout** — Sidebar-driven layout with cookie-persisted collapse state, Clerk `OrganizationSwitcher` / `UserButton`, icon-collapse mode, and active-route detection
 - **Type Safety** — End-to-end TypeScript with strict mode and generated API types across all packages
-- **Design System** — Shared UI component library built on shadcn/ui and Radix primitives
+- **Design System** — Shared UI component library with 40+ shadcn/ui components built on Radix primitives
 - **Performance** — Next.js Turbopack, React Server Components, and Tailwind CSS v4
 - **Code Quality** — ESLint 9, Prettier, and TypeScript strict checks enforced on every commit
 - **Error Monitoring** — Sentry across client, server, and edge runtimes with session replay and tracing
@@ -80,8 +81,11 @@ echo/
 ├── apps/
 │   ├── web/                 # Primary Next.js application
 │   │   └── modules/
-│   │       └── auth/        # Auth feature module (views, layouts, guards)
-│   └── widget/              # Embeddable widget application
+│   │       ├── auth/        # Auth feature module (views, layouts, guards)
+│   │       └── dashboard/   # Dashboard feature module (layout, sidebar)
+│   └── widget/              # Embeddable widget application (Vapi AI voice)
+│       └── modules/
+│           └── widget/      # Widget feature module (hooks)
 ├── packages/
 │   ├── backend/             # Convex real-time backend (schema + server functions)
 │   ├── ui/                  # Shared component library
@@ -90,7 +94,7 @@ echo/
 │   └── typescript-config/   # Shared TypeScript configuration
 ```
 
-The monorepo uses a **workspace dependency graph** where apps consume packages, and packages can depend on other packages. Turborepo ensures tasks run in topological order with caching at every layer. The `@workspace/backend` package provides a shared Convex client that both apps import for real-time data access. Feature modules under `apps/web/modules/` isolate domain logic (views, layouts, guards) from the Next.js app directory routing layer.
+The monorepo uses a **workspace dependency graph** where apps consume packages, and packages can depend on other packages. Turborepo ensures tasks run in topological order with caching at every layer. The `@workspace/backend` package provides a shared Convex client that both apps import for real-time data access. Feature modules under `apps/web/modules/` and `apps/widget/modules/` isolate domain logic (views, layouts, guards, hooks) from the Next.js app directory routing layer.
 
 ---
 

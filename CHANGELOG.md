@@ -11,6 +11,113 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.0] - 2026-07-02
+
+### Overview
+
+This release introduces the **Dashboard module** — a full sidebar-driven layout with
+Clerk-integrated navigation, six stub pages for the core product surfaces, and a
+major expansion of the `@workspace/ui` component library to 40+ shadcn/ui components.
+
+---
+
+### Added
+
+#### Dashboard module — `apps/web/modules/dashboard/`
+
+- **`ui/layouts/dashboard-layout/index.tsx`** — `DashboardLayout` server component;
+  reads `sidebar_state` cookie for SSR-persisted open/closed state, composes
+  `AuthGuard` + `OrganizationGuard` + `SidebarProvider` + `DashboardSidebar` + `main`
+  into a single reusable layout
+- **`ui/components/dashboard-sidebar/index.tsx`** — `DashboardSidebar` client
+  component with full three-section nav:
+  - **Header** — `OrganizationSwitcher` inside `SidebarMenuButton asChild` with
+    custom Clerk `appearance` for sidebar-width and icon-collapse states
+  - **Content** — three `SidebarGroup` sections: Customer Support
+    (Conversations, Knowledge Base), Configuration (Widget Customization,
+    Integrations, Voice Assistant), Account (Plans & Billing); each item uses
+    `SidebarMenuButton asChild` wrapping a Next.js `<Link>` with active-state
+    detection via `usePathname`
+  - **Footer** — `UserButton showName` with custom Clerk `appearance` for
+    sidebar-width and icon-collapse layout
+  - **Rail** — `SidebarRail` for drag-to-resize; `collapsible="icon"` mode
+
+#### Dashboard pages — `apps/web/app/(dashboard)/`
+
+Six stub pages scaffolded for the core product surfaces:
+
+| Route            | File                     | Section          |
+| ---------------- | ------------------------ | ---------------- |
+| `/conversations` | `conversations/page.tsx` | Customer Support |
+| `/files`         | `files/page.tsx`         | Knowledge Base   |
+| `/customization` | `customization/page.tsx` | Configuration    |
+| `/integrations`  | `integrations/page.tsx`  | Configuration    |
+| `/plugins/vapi`  | `plugins/vapi/page.tsx`  | Voice Assistant  |
+| `/billing`       | `billing/page.tsx`       | Account          |
+
+#### UI component library expansion — `packages/ui`
+
+40+ new shadcn/ui components added to `@workspace/ui`:
+
+`accordion` · `alert-dialog` · `alert` · `aspect-ratio` · `avatar` · `badge` ·
+`breadcrumb` · `calendar` · `card` · `carousel` · `chart` · `checkbox` ·
+`collapsible` · `command` · `context-menu` · `dialog` · `drawer` ·
+`dropdown-menu` · `empty` · `field` · `hover-card` · `input-group` · `input-otp` ·
+`kbd` · `label` · `menubar` · `message` · `native-select` · `navigation-menu` ·
+`pagination` · `popover` · `progress` · `radio-group` · `resizable` ·
+`scroll-area` · `select` · `separator` · `sheet` · `sidebar` · `skeleton` ·
+`slider` · `sonner` · `spinner` · `switch` · `table` · `tabs` · `textarea` ·
+`toggle-group` · `toggle` · `tooltip`
+
+Also added: `hooks/use-mobile.ts` — `useIsMobile` hook used by the sidebar for
+tooltip/collapse behaviour.
+
+New Radix UI primitives added to `packages/ui`:
+`react-accordion`, `react-alert-dialog`, `react-aspect-ratio`, `react-avatar`,
+`react-checkbox`, `react-collapsible`, `react-context-menu`, `react-dialog`,
+`react-dropdown-menu`, `react-hover-card`, `react-label`, `react-menubar`,
+`react-navigation-menu`, `react-popover`, `react-progress`, `react-radio-group`,
+`react-scroll-area`, `react-select`, `react-separator`, `react-slider`,
+`react-switch`, `react-tabs`, `react-toggle`, `react-toggle-group`, `react-tooltip`
+
+New peer dependencies added to `apps/web`:
+`@base-ui/react`, `@shadcn/react`, `cmdk`, `date-fns`, `embla-carousel-react`,
+`input-otp`, `react-day-picker`, `react-resizable-panels`, `recharts`, `sonner`, `vaul`
+
+---
+
+### Changed
+
+#### App router — `apps/web/app/(dashboard)/layout.tsx`
+
+- Replaced inline `AuthGuard` + `OrganizationGuard` composition with a single
+  `<DashboardLayout>` import, moving all layout concerns into the dashboard module.
+  The app route file is now a thin delegation wrapper.
+
+#### Core UI — `packages/ui`
+
+- **`button.tsx`** — rewritten with updated variant/size tokens and class structure
+  matching the expanded design system
+- **`input.tsx`** — updated to align with new design token naming
+- **`styles/globals.css`** — major update: new CSS custom property design tokens for
+  sidebar, chart palette, and extended color scales; Tailwind v4 layer structure
+
+---
+
+### Technical Decisions
+
+- **Module-based architecture for dashboard** — `DashboardLayout` and
+  `DashboardSidebar` live under `modules/dashboard/ui/` rather than in `app/`, keeping
+  the app directory as a thin routing layer and making both components independently
+  testable and reusable.
+- **Cookie-persisted sidebar state** — `sidebar_state` is read server-side in
+  `DashboardLayout` so the sidebar open/closed state survives hard refreshes without
+  layout shift.
+- **Stub pages** — all six dashboard routes are scaffolded as minimal stubs; content
+  will be filled in by subsequent feature releases.
+
+---
+
 ## [0.5.0] - 2026-07-01
 
 ### Overview
@@ -511,7 +618,9 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
 
 ---
 
-[Unreleased]: https://github.com/RISHII7/echo/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/RISHII7/echo/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/RISHII7/echo/compare/v0.5.1...v0.6.0
+[0.5.1]: https://github.com/RISHII7/echo/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/RISHII7/echo/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/RISHII7/echo/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/RISHII7/echo/compare/v0.3.0...v0.4.0
