@@ -65,7 +65,7 @@ Echo is a production-ready, full-stack monorepo platform engineered for enterpri
 - **Dashboard Layout** — Sidebar-driven layout with cookie-persisted collapse state, Clerk `OrganizationSwitcher` / `UserButton`, icon-collapse mode, and active-route detection
 - **Voice AI** — Vapi AI SDK integration in the widget app with real-time call state, speech events, and live transcript
 - **Type Safety** — End-to-end TypeScript with strict mode and generated API types across all packages
-- **Design System** — Shared UI component library with 40+ shadcn/ui components built on Radix primitives
+- **Design System** — Shared UI component library with 40+ shadcn/ui components built on Radix primitives; blue-based color palette, font and shadow CSS custom property tokens, and active-state gradient navigation highlighting
 - **Performance** — Next.js Turbopack, React Server Components, and Tailwind CSS v4
 - **Code Quality** — ESLint 9, Prettier, and TypeScript strict checks enforced on every commit
 - **Error Monitoring** — Sentry across client, server, and edge runtimes with session replay and tracing

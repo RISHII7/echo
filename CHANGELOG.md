@@ -7,7 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-> Changes staged for the next release.
+### Added
+
+#### Design system tokens — `packages/ui/src/styles/globals.css`
+
+- **Blue color palette** — primary colour updated from neutral grey to blue
+  (`oklch(0.6231 0.188 259.8145)`) across light and dark themes; sidebar primary,
+  ring, and chart tokens all aligned to the same blue base
+- **Font tokens** — `--font-sans` (Inter), `--font-serif` (Source Serif 4),
+  `--font-mono` (JetBrains Mono) added to `:root` and `.dark` and mapped in
+  `@theme inline`
+- **Shadow tokens** — `--shadow-2xs` through `--shadow-2xl` added to `:root` and
+  `.dark` and mapped in `@theme inline`
+- **Base layer** — `cursor: pointer` applied globally to `button:not([disabled])`
+  and `[role="button"]:not([disabled])`; `letter-spacing: var(--tracking-normal)`
+  and `font-weight: 500` set on `body`
+
+#### Sidebar active-state highlighting — `apps/web/modules/dashboard/ui/components/dashboard-sidebar/`
+
+- Active nav items now render a `bg-linear-to-b from-sidebar-primary to-[#0b63f3]`
+  gradient with `text-sidebar-primary-foreground` applied via `cn()` across all
+  three sidebar nav groups (Customer Support, Configuration, Account)
+
+### Changed
+
+#### Vapi integration — `apps/widget/modules/widget/hooks/use-vapi.ts`
+
+- Hardcoded public Vapi API key and assistant ID removed; callers must supply
+  keys via environment configuration (values set to empty string placeholders)
 
 ---
 
