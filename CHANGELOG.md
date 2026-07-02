@@ -9,6 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Widget UI module — `apps/widget/modules/widget/ui/`
+
+- **`views/widget-view/index.tsx`** — `WidgetView` client component; full-viewport
+  card layout (`min-h-screen`, `rounded-xl`, `border`, `bg-muted`) composing
+  `WidgetHeader` + scrollable body + `WidgetFooter`; accepts `organizationId` prop
+  for per-org data loading in subsequent releases
+- **`components/widget-header/index.tsx`** — `WidgetHeader` presentational component;
+  blue gradient background (`bg-linear-to-b from-primary to-[#0b63f3]`) matching
+  the dashboard active-state palette; accepts `children` and optional `className`
+- **`components/widget-footer/index.tsx`** — `WidgetFooter` navigation bar with
+  full-height (`h-14`) ghost icon buttons for Home and Inbox screens; active icon
+  highlights in `text-primary`; `screen` state typed as `"selection" | "inbox"`
+  (useState stub, ready for screen-routing wiring)
+
+#### Widget entry point — `apps/widget/app/page.tsx`
+
+- Refactored from inline Vapi debug UI to a clean entry point: unwraps
+  `organizationId` from async `searchParams` via React `use()` and delegates
+  rendering to `<WidgetView organizationId={organizationId} />`
+
 #### Design system tokens — `packages/ui/src/styles/globals.css`
 
 - **Blue color palette** — primary colour updated from neutral grey to blue
