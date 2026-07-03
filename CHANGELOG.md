@@ -9,6 +9,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Widget selection screen — `apps/widget/modules/widget/ui/screens/widget-selection-screen/`
+
+- **`index.tsx`** — `WidgetSelectionScreen` client component; greets the user
+  ("Hi there! 👋 / How can I help you today?") and presents a "Start chat" outline
+  button; on click calls `api.public.conversations.create` mutation with
+  `contactSessionId` and `organizationId`; on success stores the returned ID in
+  `conversationIdAtom` and routes to `"chat"`; guards against missing org/session by
+  routing to `"error"` or `"auth"` respectively; `isPending` state disables the
+  button while the mutation is in flight
+
+#### Widget chat screen — `apps/widget/modules/widget/ui/screens/widget-chat-screen/`
+
+- **`index.tsx`** — `WidgetChatScreen` client component; queries
+  `api.public.conversations.getOne` with `conversationId` + `contactSessionId` (skips
+  when either is null); header shows back-arrow `Button` (`variant="transparent"`)
+  and menu icon; back button clears `conversationIdAtom` and routes to `"selection"`;
+  body currently renders raw `JSON.stringify(conversation)` as a data stub
+
+#### Conversations backend — `packages/backend/convex/`
+
+- **`public/conversations.ts`** (new) — two server functions:
+  - `create` mutation: verifies session existence and expiry, inserts a new
+    `conversations` document with `status: "unresolved"` and a placeholder
+    `threadId: "123"` (to be replaced when thread creation is wired), returns the
+    new document ID
+  - `getOne` query: verifies session, fetches the conversation document, returns
+    `{ _id, status, threadId }` or `null` if not found; throws `ConvexError`
+    `UNAUTHORIZED` for invalid/expired sessions
+- **`schema.ts`** — `conversations` table added:
+  - Fields: `threadId` (string), `organizationId` (string),
+    `contactSessionId` (ref to `contactSessions`),
+    `status` (union: `"unresolved" | "escalated" | "resolved"`)
+  - Indexes: `by_organization_id`, `by_contact_session_id`, `by_thread_id`,
+    `by_status_and_organization_id`
+
+#### UI — `packages/ui/src/components/button.tsx`
+
+- **`transparent` variant** added: `bg-transparent text-primary-foreground` with
+  hover dim (`hover:text-primary-foreground/80`); used by chat screen header
+  buttons rendered over the blue gradient `WidgetHeader`
+
+### Changed
+
+#### Widget atoms — `apps/widget/modules/widget/atoms/widget-atoms/index.ts`
+
+- **`conversationIdAtom`** added: `atom<Id<"conversations"> | null>(null)`; set
+  by selection screen on conversation creation, cleared on back navigation
+
+#### Widget view — `apps/widget/modules/widget/ui/views/widget-view/index.tsx`
+
+- `selection` slot wired to `<WidgetSelectionScreen />` (was `<p>TODO: Selection</p>`)
+- `chat` slot wired to `<WidgetChatScreen />` (was `<p>TODO: Chat</p>`)
+
+---
+
 #### Widget loading screen — `apps/widget/modules/widget/ui/screens/widget-loading-screen/`
 
 - **`index.tsx`** — `WidgetLoadingScreen` client component; multi-step sequential
