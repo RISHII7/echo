@@ -9,6 +9,67 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Widget loading screen — `apps/widget/modules/widget/ui/screens/widget-loading-screen/`
+
+- **`index.tsx`** — `WidgetLoadingScreen` client component; multi-step sequential
+  initialisation flow driven by a local `InitStep` state (`"org"` → `"session"` →
+  `"done"`):
+  - **Step 1 — org validation**: calls `api.public.organizations.validate` action;
+    if valid, stores `organizationId` in atom and advances; if invalid or missing,
+    sets `errorMessageAtom` and routes to `"error"` screen
+  - **Step 2 — session validation**: reads `contactSessionIdAtomFamily(organizationId)`
+    from localStorage; if a stored session ID exists calls
+    `api.public.contactSessions.validate` mutation to check expiry; advances to
+    `"done"` either way
+  - **Step 3 — done**: routes to `"selection"` if a valid unexpired session was found,
+    otherwise routes to `"auth"` for new contact registration
+  - Shows `WidgetHeader` ("We're getting things ready / Just a moment") and a
+    spinning `LoaderIcon` with a live `loadingMessage` string updated at each step
+
+#### Widget atoms expansion — `apps/widget/modules/widget/atoms/widget-atoms/index.ts`
+
+- **`organizationIdAtom`** — `atom<string | null>(null)`; set after org validation passes
+- **`contactSessionIdAtomFamily`** — `atomFamily` (from `jotai-family`) keyed by
+  `organizationId`; each slot is an `atomWithStorage` persisting the session ID
+  under `${CONTACT_SESSION_KEY}_${organizationId}` in `localStorage`
+- **`errorMessageAtom`** — `atom<string | null>(null)`; consumed by `WidgetErrorScreen`
+- **`loadingMessageAtom`** — `atom<string | null>(null)`; updated at each loading step
+- **`screenAtom`** initial state changed from `"auth"` to `"loading"` so every visit
+  starts the initialisation flow
+- **`jotai-family ^1.0.2`** added to widget dependencies; replaces the deprecated
+  `atomFamily` export from `jotai/utils`
+
+#### Contact sessions — `packages/backend/convex/public/contactSessions.ts`
+
+- **`validate` mutation** added: accepts a `contactSessionId` (`v.id("contactSessions")`);
+  returns `{ valid: false, reason }` if the document is missing or `expiresAt` has
+  passed, otherwise returns `{ valid: true, contactSession }`
+
+#### Organizations — `packages/backend/convex/public/organizations.ts`
+
+- **`validate` action** now wraps the Clerk API call in `try/catch`; a missing
+  organisation returns `{ valid: false, reason: "Organization not found" }` instead
+  of throwing an uncaught `ClerkAPIResponseError`
+- **`@clerk/backend ^3.10.0`** added to `packages/backend` dependencies
+
+### Changed
+
+#### Widget auth screen — `apps/widget/modules/widget/ui/screens/widget-auth-screen/index.tsx`
+
+- Removed hardcoded `organizationId = "123"` placeholder; reads `organizationIdAtom`
+  via `useAtomValue` instead (set by the loading screen after org validation)
+- On successful `createContactSession`, stores the returned ID into
+  `contactSessionIdAtomFamily(organizationId)` via `useSetAtom` so subsequent visits
+  skip the auth form
+
+#### Widget view — `apps/widget/modules/widget/ui/views/widget-view/index.tsx`
+
+- `error` slot now renders `<WidgetErrorScreen />` (was `<p>TODO: Error</p>`)
+- `loading` slot now renders `<WidgetLoadingScreen organizationId={organizationId} />`
+  (was `<p>TODO: Loading</p>`)
+
+---
+
 #### Widget state management — `apps/widget/modules/widget/`
 
 - **`constants/index.ts`** — `WIDGET_SCREENS` as-const tuple defining all 8 widget
