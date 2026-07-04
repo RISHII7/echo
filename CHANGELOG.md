@@ -9,6 +9,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Widget inbox screen — `apps/widget/modules/widget/ui/screens/widget-inbox-screen/`
+
+- **`index.tsx`** — `WidgetInboxScreen` client component; lists all conversations
+  for the current contact session via `usePaginatedQuery(api.public.conversations.getMany)`
+  (`initialNumItems: 10`), each row showing a relative timestamp
+  (`formatDistanceToNow` from `date-fns`), the last message preview (truncated), and
+  a `ConversationStatusIcon`; clicking a row sets `conversationIdAtom` and routes to
+  `"chat"`; back button routes to `"selection"`; infinite scroll wired via
+  `useInfiniteScroll` + `InfiniteScrollTrigger`; renders `WidgetFooter` for
+  Home/Inbox navigation
+
+#### Conversation status icon — `packages/ui/src/components/conversation-status-icon.tsx`
+
+- **`ConversationStatusIcon`** component (new) — colored circular badge per
+  conversation status: `resolved` (green, check), `unresolved` (destructive red,
+  arrow-right), `escalated` (yellow, arrow-up)
+
+#### Conversations list query — `packages/backend/convex/public/conversations.ts`
+
+- **`getMany` query** (new) — paginated, session-gated list of conversations for a
+  `contactSessionId` via the `by_contact_session_id` index, ordered newest-first;
+  enriches each conversation with its most recent message
+  (`supportAgent.listMessages` with `numItems: 1`) as `lastMessage`
+- **`date-fns ^4.4.0`** added to `apps/widget` dependencies
+
+### Changed
+
+#### Widget footer navigation — `apps/widget/modules/widget/ui/components/widget-footer/index.tsx`
+
+- Home and Inbox buttons now call `setScreen("selection")` / `setScreen("inbox")`
+  via `screenAtom`; active icon highlighting reads live `screen` state via
+  `useAtomValue` instead of a hardcoded local variable
+
+#### Widget view — `apps/widget/modules/widget/ui/views/widget-view/index.tsx`
+
+- `inbox` slot wired to `<WidgetInboxScreen />` (was `<p>TODO: Inbox</p>`)
+
+#### Widget selection screen — `apps/widget/modules/widget/ui/screens/widget-selection-screen/index.tsx`
+
+- Renders `<WidgetFooter />` so Home/Inbox navigation is available from the
+  selection screen
+
+#### Dicebear avatar — `packages/ui/src/components/dicebear-avatar.tsx`
+
+- Added `imageUrl` to the `useMemo` dependency array for `avatarSrc`, fixing a stale
+  avatar when `imageUrl` changes after initial render
+
+---
+
 #### Infinite scroll for chat history — `packages/ui/src/`
 
 - **`hooks/use-infinite-scroll.ts`** — `useInfiniteScroll` hook; wraps an
