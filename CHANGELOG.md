@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+#### Conversations query — `packages/backend/convex/public/conversations.ts`
+
+- **`getOne` — missing conversation** now throws `ConvexError({ code: "NOT_FOUND",
+message: "Conversation not found" })` instead of silently returning `null`;
+  callers can distinguish a missing document from a network/auth failure
+- **`getOne` — ownership check** added: verifies `conversation.contactSessionId ===
+session._id` before returning; throws `ConvexError({ code: "UNAUTHORIZED",
+message: "Incorrect session" })` if the session does not own the conversation,
+  preventing cross-session data leakage
+
+---
+
 ### Added
 
 #### Widget selection screen — `apps/widget/modules/widget/ui/screens/widget-selection-screen/`
