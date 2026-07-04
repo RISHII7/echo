@@ -9,6 +9,68 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Dashboard chat view — `apps/web/modules/dashboard/ui/views/`
+
+- **`conversation-id-view/index.tsx`** (new) — `ConversationIdView` client
+  component; operator-facing chat interface for a single conversation:
+  - Loads the conversation via `api.private.conversations.getOne`, messages via
+    `useThreadMessages(api.private.messages.getMany)` (`initialNumItems: 10`)
+  - Renders messages through the AI Elements components (`AIConversation`,
+    `AIMessage`, `AIResponse`), with roles inverted from the widget's perspective
+    (`user` messages shown as `assistant` bubbles and vice versa, since the
+    dashboard is the operator's viewpoint) and `DicebearAvatar` for the contact
+  - `AIInput` form (`react-hook-form` + `zodResolver`) lets the operator reply;
+    submits via `api.private.messages.create`; input and submit disable when
+    `conversation.status === "resolved"`
+  - Header includes an "Enhance" `AIInputButton` (Wand2Icon) — not yet wired to
+    prompt-enhancement logic
+- **`conversations-view/index.tsx`** (new) — `ConversationsView`; empty-state
+  placeholder shown at `/conversations` before a conversation is selected (Echo
+  logo + wordmark, centered)
+- **`app/(dashboard)/conversations/page.tsx`** — now renders `<ConversationsView />`
+  (was a bare `<div>Conversations</div>`)
+- **`app/(dashboard)/conversations/[conversationId]/page.tsx`** (new) — dynamic
+  route rendering `<ConversationIdView conversationId={conversationId} />`
+
+#### Operator-side conversation queries — `packages/backend/convex/private/`
+
+- **`conversations.ts` — `getOne` query** (new) — Clerk-identity-gated and
+  organization-scoped; fetches a conversation by ID, verifies
+  `conversation.organizationId` matches the caller's `orgId`, and attaches the
+  associated `contactSession` document
+- **`messages.ts`** (new) — two server functions:
+  - `create` mutation: identity/org-gated, verifies conversation ownership and
+    rejects resolved conversations, then calls `saveMessage()` (from
+    `@convex-dev/agent`) with `role: "assistant"` to record the operator's reply
+    directly into the agent thread (bypassing `generateText` since this is a human
+    reply, not an AI-generated one)
+  - `getMany` query: identity/org-gated, resolves the conversation by `threadId`
+    via the `by_thread_id` index, then returns paginated messages via
+    `supportAgent.listMessages()`
+
+#### Dashboard dependencies — `apps/web/package.json`
+
+- **`@convex-dev/agent ^0.1.18`**, **`@hookform/resolvers ^5.4.0`**,
+  **`react-hook-form ^7.80.0`**, **`zod ^4.4.3`** added
+
+### Changed
+
+#### Dashboard layout — `apps/web/modules/dashboard/ui/layouts/dashboard-layout/index.tsx`
+
+- Wrapped `SidebarProvider` in a Jotai `<Provider>` so dashboard components (the
+  new conversations views) can share atom state
+
+#### Widget dependencies — `apps/widget/package.json`
+
+- **`@hookform/resolvers`** bumped `^3.10.0` → `^5.2.0` to match `packages/ui` and
+  fix a phantom-dependency type mismatch: `@hookform/resolvers`' zod adapter does
+  not declare `zod` as an explicit dependency, so pnpm's module resolution fell
+  through to a hoisted `zod@4.4.3` (pulled in by `apps/web`), producing a type
+  error against `zod@3.25.76`-built schemas. Version 5's `zodResolver` uses a
+  structural type check compatible with both zod v3 and v4, resolving the mismatch
+
+---
+
 #### Dashboard conversations inbox — `apps/web/modules/dashboard/`
 
 - **`ui/layouts/conversations-layout/index.tsx`** (new) — `ConversationsLayout`;
