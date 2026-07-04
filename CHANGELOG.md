@@ -7,6 +7,67 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+#### AI support agent — `packages/backend/convex/`
+
+- **`convex.config.ts`** (new) — registers `@convex-dev/agent` as a Convex component
+  via `app.use(agent)`
+- **`system/ai/agents/supportAgent.ts`** (new) — `supportAgent` instance built with
+  `@convex-dev/agent`'s `Agent` class; uses `@ai-sdk/google`'s
+  `google.chat("gemini-2.5-flash")` as the chat model; instructed as
+  `"You are a customer support agent"`
+- **`system/contactSessions.ts`** (new) — `getOne` internal query: fetches a contact
+  session document by ID for server-to-server use (no expiry check — callers
+  perform that check themselves)
+- **`system/conversations.ts`** (new) — `getByThreadId` internal query: looks up a
+  conversation by its agent `threadId` via the `by_thread_id` index
+- **`public/messages.ts`** (new) — two server functions:
+  - `create` action: validates contact session and conversation state (rejects
+    resolved conversations), then calls `supportAgent.generateText()` with the
+    conversation's `threadId` and the user's `prompt`
+  - `getMany` query: validates session, returns paginated messages via
+    `supportAgent.listMessages()` (`paginationOptsValidator`)
+- **`@ai-sdk/google@1.2.18`**, **`@ai-sdk/openai ^1.3.23`**, **`ai ^4.3.19`**,
+  **`@convex-dev/agent ^0.1.16`** added to `packages/backend` dependencies
+
+#### Conversation threading — `packages/backend/convex/public/conversations.ts`
+
+- **`create` mutation** now calls `supportAgent.createThread()` to provision a real
+  agent thread (replacing the placeholder `threadId: "123"`), and seeds it with an
+  initial assistant greeting ("Hello, how can I help you today?") via
+  `saveMessage()` from `@convex-dev/agent`
+
+#### Chat UI — `packages/ui/src/components/ai/`
+
+- Nine new AI Elements components added: `branch`, `conversation` (with
+  `AIConversationScrollButton`, powered by `use-stick-to-bottom`), `input`
+  (auto-resizing textarea, model `Select`, submit/stop button states), `message`,
+  `reasoning` (collapsible chain-of-thought display), `response` (Markdown via
+  `react-markdown` + `remark-gfm`), `source`, `suggestion`, `tool`
+- **`dropzone.tsx`** (new) — file drop zone built on `react-dropzone`
+- New dependencies added to `@workspace/ui`: `react-dropzone ^15.0.0`,
+  `react-markdown ^10.1.0`, `remark-gfm ^4.0.1`, `use-stick-to-bottom ^1.1.6`,
+  `@radix-ui/react-use-controllable-state ^1.2.3`
+
+#### Widget chat screen — `apps/widget/modules/widget/ui/screens/widget-chat-screen/index.tsx`
+
+- Rebuilt on the new AI Elements components: `AIConversation` /
+  `AIConversationContent` render the message list via `toUIMessages()`,
+  `AIMessage` / `AIMessageContent` / `AIResponse` render each turn, `AIInput` +
+  `react-hook-form` (`zodResolver`) replace the raw form submit handler
+- **`useThreadMessages`** (from `@convex-dev/agent/react`) subscribes to
+  `api.public.messages.getMany` for the conversation's `threadId`, paginated
+  with `initialNumItems: 10`
+- Message submission calls `api.public.messages.create` action with the
+  conversation's `threadId`, the typed prompt, and `contactSessionId`; form resets
+  immediately on submit
+- Input and submit button disable when `conversation.status === "resolved"`,
+  with placeholder text reflecting the resolved state
+- **`@convex-dev/agent ^0.1.18`** added to `apps/widget` dependencies
+
+---
+
 ### Fixed
 
 #### Conversations query — `packages/backend/convex/public/conversations.ts`
