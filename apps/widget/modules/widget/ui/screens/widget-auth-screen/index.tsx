@@ -8,8 +8,9 @@ import { api } from "@workspace/backend/_generated/api"
 import { Doc } from "@workspace/backend/_generated/dataModel"
 
 import {
-  contactSessionIdAtomFamily,
+  screenAtom,
   organizationIdAtom,
+  contactSessionIdAtomFamily,
 } from "@/modules/widget/atoms/widget-atoms"
 
 import {
@@ -29,10 +30,8 @@ const formSchema = z.object({
   email: z.string().email("Invalid email address"),
 })
 
-// Temporary test organizationId, before we add state management
-const organizationId = "123"
-
 export const WidgetAuthScreen = () => {
+  const setScreen = useSetAtom(screenAtom)
   const organizationId = useAtomValue(organizationIdAtom)
   const setContactSessionId = useSetAtom(
     contactSessionIdAtomFamily(organizationId || "")
@@ -75,6 +74,7 @@ export const WidgetAuthScreen = () => {
     })
 
     setContactSessionId(contactSessionId)
+    setScreen("selection")
   }
 
   return (

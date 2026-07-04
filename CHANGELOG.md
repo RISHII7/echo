@@ -9,6 +9,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Infinite scroll for chat history — `packages/ui/src/`
+
+- **`hooks/use-infinite-scroll.ts`** — `useInfiniteScroll` hook; wraps an
+  `IntersectionObserver` (10% threshold) on a sentinel element ref
+  (`topElementRef`); calls `loadMore(loadSize)` when the sentinel scrolls into
+  view and `status === "CanLoadMore"`; exposes `handleLoadMore`,
+  `canLoadMore`, `isLoadingMore`, `isLoadingFirstPage`, `isExhausted` derived from
+  the four-state pagination `status` (`"LoadingFirstPage" | "CanLoadMore" |
+"LoadingMore" | "Exhausted"`); `observerEnabled` flag to opt out of the observer
+- **`components/infinite-scroll-trigger.tsx`** — `InfiniteScrollTrigger`
+  presentational component; renders a centered ghost `Button` above the message
+  list showing "Load more" / "Loading..." / "No more items" depending on state;
+  disabled while loading or exhausted; forwards `ref` to the sentinel `div`
+
+#### Assistant avatar — `packages/ui/src/components/dicebear-avatar.tsx`
+
+- **`DicebearAvatar`** component (new) — renders a deterministic SVG avatar via
+  `@dicebear/core`'s `createAvatar()` with the `glass` style (`@dicebear/collection`),
+  seeded and memoised by a `seed` string; falls back to a provided `imageUrl` when
+  set; supports an optional bottom-right badge image (`badgeImageUrl`) rendered in a
+  bordered circular overlay; `size` prop controls both avatar and badge dimensions
+- **`@dicebear/core ^9.2.3`**, **`@dicebear/collection ^9.2.3`** added to
+  `@workspace/ui` dependencies
+- **`apps/widget/public/logo.svg`** (new) — static asset used as the assistant's
+  avatar image via `DicebearAvatar`'s `imageUrl` override
+
+### Changed
+
+#### Widget chat screen — `apps/widget/modules/widget/ui/screens/widget-chat-screen/index.tsx`
+
+- Wired `useInfiniteScroll` to the `useThreadMessages` pagination object
+  (`messages.status`, `messages.loadMore`, `loadSize: 10`)
+- Rendered `<InfiniteScrollTrigger>` at the top of `AIConversationContent`, above
+  the message list, so scrolling up loads older messages
+- Assistant messages now render `<DicebearAvatar imageUrl="/logo.svg" seed="assistant"
+size={32} />` next to `AIMessageContent` (previously a `TODO: Add Avatar component`
+  placeholder)
+
+#### Widget auth screen — `apps/widget/modules/widget/ui/screens/widget-auth-screen/index.tsx`
+
+- On successful contact session creation, now calls `setScreen("selection")` via
+  `screenAtom` to advance past the auth form (previously left the user on the same
+  screen after submit)
+
+---
+
 #### AI support agent — `packages/backend/convex/`
 
 - **`convex.config.ts`** (new) — registers `@convex-dev/agent` as a Convex component
