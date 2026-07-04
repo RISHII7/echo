@@ -9,6 +9,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Dashboard conversations inbox — `apps/web/modules/dashboard/`
+
+- **`ui/layouts/conversations-layout/index.tsx`** (new) — `ConversationsLayout`;
+  resizable two-pane layout via `ResizablePanelGroup` (`ConversationsPanel` at
+  20-30% width, page `children` filling the remaining 70%)
+- **`ui/components/conversations-panel/index.tsx`** (new) — `ConversationsPanel`
+  client component:
+  - Status filter `Select` (All / Unresolved / Escalated / Resolved), persisted via
+    `statusFilterAtom` (`atomWithStorage`)
+  - Paginated conversation list via `usePaginatedQuery(api.private.conversations.getMany)`
+    (`initialNumItems: 10`), infinite scroll via `useInfiniteScroll` +
+    `InfiniteScrollTrigger`
+  - Each row: `DicebearAvatar` seeded by contact session ID with a country-flag
+    badge (derived from the contact's timezone via `country-utils`), contact name,
+    relative timestamp, last-message preview (bold when from the contact, with a
+    reply-arrow icon when from the operator), and `ConversationStatusIcon`
+  - Active conversation highlighted via `usePathname` route matching, with an
+    animated left-edge indicator bar
+  - `SkeletonConversations` loading state (8 skeleton rows) shown while the first
+    page loads
+- **`atoms/index.ts`** (new) — `statusFilterAtom`, `atomWithStorage` keyed by
+  `STATUS_FILTER_KEY`, defaults to `"all"`
+- **`constants/index.ts`** (new) — `STATUS_FILTER_KEY = "echo-status-filter"`
+- **`app/(dashboard)/conversations/layout.tsx`** (new) — delegates to
+  `<ConversationsLayout>`
+- Sidebar typo fixed: "Knowldge Base" → "Knowledge Base"
+  (`dashboard-sidebar/index.tsx`)
+
+#### Organization-scoped conversations query — `packages/backend/convex/private/conversations.ts`
+
+- **`getMany` query** (new) — dashboard-side, Clerk-identity-gated (throws
+  `UNAUTHORIZED` if no identity or no `orgId`); paginated via
+  `by_status_and_organization_id` index when a `status` filter is supplied, else
+  `by_organization_id`; enriches each conversation with its `contactSession`
+  document and most recent message (`lastMessage`, via
+  `supportAgent.listMessages`); filters out any conversation whose contact session
+  no longer exists
+
+#### Country/timezone utilities — `apps/web/lib/country-utils.ts`
+
+- **`getCountryFromTimezone(timezone)`** — resolves an IANA timezone string to a
+  country `{ code, name }` via `countries-and-timezones`
+- **`getCountryFlagUrl(countryCode)`** — returns a `flagcdn.com` PNG URL for a
+  given ISO country code
+- **`countries-and-timezones ^3.9.0`**, **`jotai ^2.20.1`** added to `apps/web`
+  dependencies
+
+---
+
 #### Widget inbox screen — `apps/widget/modules/widget/ui/screens/widget-inbox-screen/`
 
 - **`index.tsx`** — `WidgetInboxScreen` client component; lists all conversations

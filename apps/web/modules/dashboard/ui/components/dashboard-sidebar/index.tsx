@@ -35,7 +35,7 @@ const customerSupportItems = [
     icon: InboxIcon,
   },
   {
-    title: "Knowldge Base",
+    title: "Knowledge Base",
     url: "/files",
     icon: LibraryBigIcon,
   },
