@@ -7,7 +7,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+#### RAG file embeddings — `packages/backend/convex/`
+
+- **`system/ai/rag.ts`** (new) — `rag` client instance from `@convex-dev/rag`;
+  uses `google.textEmbeddingModel("text-embedding-004")` (Gemini's free-tier
+  embedding model, 768-dimensional output) as the text embedding model
+- **`convex.config.ts`** — registers `rag` as a second Convex component
+  alongside `agent` via `app.use(rag)`
+- **`private/files.ts`** (new) — two server functions for the dashboard's
+  knowledge-base file uploads:
+  - `addFile` action: identity/org-gated; stores the uploaded file in Convex
+    storage, extracts its text content via `extractTextContent`, then calls
+    `rag.add()` to embed and index it into the organization's namespace
+    (`namespace: orgId`, preventing cross-org search leakage); deduplicates via
+    `contentHash` so re-uploading unchanged content skips re-indexing; cleans up
+    orphaned storage blobs when `created` is `false`
+  - `deleteFile` mutation: identity/org-gated; verifies the entry's namespace and
+    `uploadedBy` metadata match the caller's org before deleting both the RAG
+    entry and its underlying storage blob
+- **`lib/extractTextContent.ts`** (new) — `extractTextContent()`; routes by MIME
+  type to one of three Gemini 2.5 Flash-powered extractors: `extractImageText`
+  (vision — transcribes documents, describes non-document images),
+  `extractPdfText` (native PDF document understanding), and
+  `extractTextFileContent` (converts non-plain-text files to Markdown; passes
+  `text/plain` through unchanged); all three are covered by Gemini's free tier
+- **`@convex-dev/rag 0.3.3`** added to `packages/backend` dependencies
+
+### Changed
+
+#### Message creation — `packages/backend/convex/private/messages.ts`
+
+- **`create` mutation** now auto-escalates a conversation from `"unresolved"` to
+  `"escalated"` the moment an operator sends a reply, ensuring the AI agent stops
+  auto-responding as soon as a human steps into the conversation
+
 ### Fixed
+
+#### Dependency version alignment — `packages/backend`, `apps/web`, `apps/widget`
+
+- Pinned `convex`, `ai`, `zod`, `@convex-dev/agent`, and `convex-helpers` to
+  **exact** versions (removed caret ranges) across all three packages, matching
+  known-compatible versions. Caret ranges had let `pnpm install` drift to newer
+  releases over time, which cascaded into several real, hard-to-diagnose type
+  and runtime errors:
+  - `convex` (newer minor) added an `AdvancedRunQueryOptions` overload to
+    `GenericMutationCtx.runQuery` not present on `GenericActionCtx.runQuery`,
+    breaking `rag.add()`'s type signature when called from an action
+  - `convex-helpers` (newer patch) called `getDocumentSize` from `convex/values`,
+    an export that doesn't exist in the pinned `convex` version, crashing
+    `convex dev`'s bundler at runtime
+  - `@convex-dev/agent` drifted to `ai@6.x` (a major version away from the
+    `ai@4.3.19` the rest of the backend is built against), changing the shape of
+    `UIMessage` (`content` → `parts`) and breaking both chat views
+  - Mixed zod v3/v4 across packages caused the earlier `@hookform/resolvers`
+    phantom-dependency mismatch (see prior entries)
+
+---
 
 #### Conversations query — `packages/backend/convex/private/conversations.ts`
 
