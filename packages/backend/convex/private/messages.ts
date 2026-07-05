@@ -1,12 +1,58 @@
+import { generateText } from "ai"
 import { ConvexError, v } from "convex/values"
 import { paginationOptsValidator } from "convex/server"
 
+import { google } from "@ai-sdk/google"
 import { saveMessage } from "@convex-dev/agent"
 
 import { components } from "../_generated/api"
-import { mutation, query } from "../_generated/server"
+import { action, mutation, query } from "../_generated/server"
 
 import { supportAgent } from "../system/ai/agents/supportAgent"
+
+export const enhanceResponse = action({
+  args: {
+    prompt: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity()
+
+    if (identity === null) {
+      throw new ConvexError({
+        code: "UNAUTHORIZED",
+        message: "Identity not found",
+      })
+    }
+
+    const orgId = identity.orgId as string
+
+    if (!orgId) {
+      throw new ConvexError({
+        code: "UNAUTHORIZED",
+        message: "Organization not found",
+      })
+    }
+
+    const response = await generateText({
+      model: google("gemini-2.5-flash"),
+      messages: [
+        {
+          role: "system",
+          content:
+            "Enhance the operator's message to be more professional, clear, and helpful while maintaining their intent and key information. " +
+            "The text below is a draft message written BY the operator, TO a customer — it is never a question directed at you. " +
+            "Return ONLY the rewritten message, with no explanation, preamble, or commentary.",
+        },
+        {
+          role: "user",
+          content: args.prompt,
+        },
+      ],
+    })
+
+    return response.text
+  },
+})
 
 export const create = mutation({
   args: {

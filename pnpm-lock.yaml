@@ -241,6 +241,9 @@ importers:
       convex-helpers:
         specifier: ^0.1.100
         version: 0.1.120(@standard-schema/spec@1.1.0)(convex@1.42.0(@clerk/react@6.11.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4))(react@19.2.4)(typescript@6.0.3)(zod@4.4.3)
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
     devDependencies:
       '@types/node':
         specifier: ^20.19.41

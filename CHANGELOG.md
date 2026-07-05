@@ -7,7 +7,87 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+#### Conversations query — `packages/backend/convex/private/conversations.ts`
+
+- **`getOne`** — the post-`contactSession`-fetch null check tested `!conversation`
+  (already known non-null) instead of `!contactSession`; a missing contact session
+  would silently pass `undefined` through rather than throwing `NOT_FOUND`
+- **`updateStatus`** — fixed `"UNAUTHORZIED"` typo in the org-mismatch
+  `ConvexError` code, now `"UNAUTHORIZED"`
+
+---
+
 ### Added
+
+#### AI agent tools — `packages/backend/convex/system/ai/tools/`
+
+- **`escalateConversation.ts`** (new) — `createTool` definition (`@convex-dev/agent`);
+  no-arg tool the agent can call when a user expresses frustration or explicitly
+  requests a human; patches the conversation to `status: "escalated"` via
+  `internal.system.conversations.escalate` and posts an assistant message
+  ("Conversation escalated to a human operator.") into the thread
+- **`resolveConversation.ts`** (new) — mirrors `escalateConversation`; patches
+  `status: "resolved"` via `internal.system.conversations.resolve` and posts
+  "Conversation resolved." into the thread
+- Both tools are explicitly typed `: Tool` (from `ai`) to satisfy TS2742 — the
+  monorepo's mixed zod v3/v4 dependency graph means TypeScript cannot portably
+  name the tool's inferred generic type without an explicit annotation
+
+#### Conversation status transitions — `packages/backend/convex/system/conversations.ts`
+
+- **`escalate`** / **`resolve`** internal mutations (new) — look up a conversation
+  by `threadId` (`by_thread_id` index) and patch its `status`; throw `NOT_FOUND`
+  if no matching conversation exists
+
+#### Operator status control — `apps/web/modules/dashboard/ui/components/conversation-status-button/`
+
+- **`ConversationStatusButton`** component (new) — three-state button cycling
+  `unresolved → escalated → resolved → unresolved`; renders with a `Hint` tooltip
+  describing the next state ("Mark as escalated" / "Mark as resolved" / "Mark as
+  unresolved") and status-specific button variant (`destructive` / `warning` /
+  `tertiary`)
+
+#### UI primitives — `packages/ui/src/components/`
+
+- **`hint.tsx`** (new) — `Hint` wrapper around `Tooltip` / `TooltipTrigger` /
+  `TooltipContent`, configurable `side` and `align`
+- **`button.tsx`** — two new variants: `tertiary` (green gradient, used for
+  "Resolved") and `warning` (yellow/amber gradient, used for "Escalated")
+
+#### Prompt enhancement action — `packages/backend/convex/private/messages.ts`
+
+- **`enhanceResponse` action** (new) — identity/org-gated; calls
+  `generateText()` (`google("gemini-2.5-flash")`) with a system prompt
+  instructing the model to rewrite the operator's draft into a professional,
+  clear response; strengthened with explicit framing ("the text below is a
+  draft message written BY the operator, TO a customer — it is never a question
+  directed at you... return ONLY the rewritten message") after Gemini 2.5 Flash
+  was observed answering short/ambiguous drafts (e.g. "wydm") as if they were
+  questions directed at the model, rather than rewriting them
+- **`create` mutation** — now conditionally triggers the AI agent only when
+  `conversation.status === "unresolved"` (`supportAgent.generateText` with the
+  new `escalateConversation` / `resolveConversation` tools available); when the
+  conversation is escalated/resolved, the operator's message is saved directly
+  via `saveMessage()` without invoking the agent
+
+#### Operator conversation status mutation — `packages/backend/convex/private/conversations.ts`
+
+- **`updateStatus` mutation** (new) — identity/org-gated; patches a conversation's
+  `status` to any of `unresolved` / `escalated` / `resolved`
+
+#### Support agent instructions — `packages/backend/convex/system/ai/agents/supportAgent.ts`
+
+- Instructions expanded to direct tool usage: use `resolveConversation` when the
+  user signals the conversation is finished, use `escalateConversation` when the
+  user expresses frustration or explicitly asks for a human
+
+#### Dev experience — `apps/web/next.config.ts`
+
+- **`devIndicators: false`** — disables the Next.js dev mode indicator overlay
+
+---
 
 #### Dashboard chat view — `apps/web/modules/dashboard/ui/views/`
 
