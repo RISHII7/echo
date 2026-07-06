@@ -9,6 +9,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Knowledge base dashboard — `apps/web/modules/files/`
+
+- **`ui/views/files-view/index.tsx`** (new) — `FilesView`; paginated file table
+  (`usePaginatedQuery(api.private.files.list)`, `initialNumItems: 10`, infinite
+  scroll via `useInfiniteScroll` + `InfiniteScrollTrigger`) showing name, type
+  badge, size, and a per-row actions dropdown (delete); "Add New" button opens
+  the upload dialog; loading and empty states handled inline
+- **`ui/components/upload-dialog/index.tsx`** (new) — `UploadDialog`; drag-and-drop
+  `Dropzone` (accepts `.pdf`, `.csv`, `.txt`, one file at a time) with optional
+  category and filename-override inputs; reads the dropped file as an
+  `ArrayBuffer` and calls `api.private.files.addFile`; disabled until a category
+  is set
+- **`ui/components/delete-file-dialog/index.tsx`** (new) — `DeleteFileDialog`;
+  confirmation dialog showing the file's name/type/size before calling
+  `api.private.files.deleteFile`
+- **`app/(dashboard)/files/page.tsx`** — now renders `<FilesView />` (was a bare
+  `<div>Files</div>`)
+
+#### File listing and metadata — `packages/backend/convex/private/files.ts`
+
+- **`list` query** (new) — identity/org-gated; resolves the org's RAG namespace,
+  lists entries via `rag.list()` (paginated), optionally filters by `category`,
+  and maps each `Entry` to a `PublicFile` view model via
+  `convertEntryToPublicFile` (resolves storage size via `ctx.db.system.get`,
+  derives file extension from the entry's `key`, maps RAG entry status
+  `"ready" | "pending" | ...` to a simplified `"ready" | "processing" | "error"`)
+- **`PublicFile`** type exported (new) — `{ id, name, type, size, status, url,
+category? }`, consumed directly by the dashboard's file table and delete dialog
+- **`formatFileSize`** helper (new) — formats bytes as `B` / `KB` / `MB` / `GB`
+  with one decimal place
+
+#### Sample knowledge base content — `assets/knowledge-base/`
+
+- Seven `.txt` reference documents added for testing/demoing the knowledge base
+  upload flow: `api-documentation`, `billing-invoice-example`, `faq`,
+  `getting-started`, `pricing-plans`, `terms-of-service`, `troubleshooting-guide`
+
+### Fixed
+
+#### Text embedding model — `packages/backend/convex/system/ai/rag.ts`
+
+- **`textEmbeddingModel`** switched from `"text-embedding-004"` to
+  `"gemini-embedding-001"` — Google deprecated `text-embedding-004` and it is no
+  longer served on the `v1beta` `embedContent` endpoint (confirmed via a direct
+  `ListModels` call), causing every file upload to fail with an uncaught
+  `AI_APICallError` at runtime
+- Added `outputDimensionality: 1536` to the model settings —
+  `gemini-embedding-001` defaults to a 3072-dimension output; truncated to match
+  the existing `embeddingDimension: 1536` RAG config. Verified with a live API
+  call returning exactly 1536 dimensions
+
+---
+
 #### RAG file embeddings — `packages/backend/convex/`
 
 - **`system/ai/rag.ts`** (new) — `rag` client instance from `@convex-dev/rag`;
