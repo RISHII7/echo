@@ -9,6 +9,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Knowledge base search tool — `packages/backend/convex/system/ai/tools/search.ts`
+
+- **`search` tool** (new) — `createTool` definition; resolves the calling
+  conversation's organization from its `threadId`, searches the RAG knowledge
+  base (`rag.search()`, `limit: 5`) scoped to that organization's namespace,
+  then interprets the raw results into a natural-language answer via a second
+  `generateText()` call using `SEARCH_INTERPRETER_PROMPT`; saves the
+  interpreted answer as an assistant message and returns it to the agent
+- Wired into `supportAgent`'s tool set as `searchTool` (alongside
+  `escalateConversationTool` and `resolveConversationTool`, all renamed from
+  their bare export names to `*Tool` suffixes for clarity in the agent's
+  instructions) in `public/messages.ts`'s `create` action
+
+#### Centralized AI prompts — `packages/backend/convex/system/ai/constants/index.ts`
+
+- **`SUPPORT_AGENT_PROMPT`** (new) — replaces the one-line inline instructions
+  string in `supportAgent.ts`; a structured prompt covering identity, available
+  tools, a step-by-step conversation flow (search first, escalate on
+  frustration, resolve on completion), tone/style rules, and edge cases
+- **`SEARCH_INTERPRETER_PROMPT`** (new) — instructs the model interpreting raw
+  RAG search results to stay strictly faithful to retrieved content, handle
+  partial/no-match cases, and never fabricate information
+- **`OPERATOR_MESSAGE_ENHANCEMENT_PROMPT`** (new) — moved out of
+  `private/messages.ts`'s `enhanceResponse` action into a shared constant;
+  expanded with explicit tone/style guidelines, preservation rules, and
+  before/after examples
+
+---
+
 #### Knowledge base dashboard — `apps/web/modules/files/`
 
 - **`ui/views/files-view/index.tsx`** (new) — `FilesView`; paginated file table
