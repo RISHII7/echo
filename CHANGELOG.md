@@ -9,6 +9,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Widget settings consumption — `apps/widget/modules/widget/`
+
+- **`ui/screens/widget-loading-screen/index.tsx`** — new `"settings"` init step
+  (`"org" → "session" → "settings" → "done"`); after session validation, queries
+  `api.public.widgetSettings.getByOrganizationId` and stores the result in the
+  new `widgetSettingsAtom` before advancing to `"done"`
+- **`ui/screens/widget-chat-screen/index.tsx`** — reads `widgetSettingsAtom` and
+  derives a `suggestions` array from `defaultSuggestions`
+  (`useMemo`, filters out unset suggestion slots); renders them as clickable
+  `AISuggestions` above the input, but only on the first message in a
+  conversation (`toUIMessages(...).length === 1`); clicking a suggestion fills
+  and immediately submits the message form
+- **`atoms/widget-atoms/index.ts`** — **`widgetSettingsAtom`** added
+  (`atom<Doc<"widgetSettings"> | null>(null)`)
+
+#### Widget settings public query — `packages/backend/convex/public/widgetSettings.ts`
+
+- **`getByOrganizationId` query** (new) — unauthenticated (widget-facing) lookup
+  of an organization's `widgetSettings` document by `organizationId`
+
+### Changed
+
+#### Conversation greeting — `packages/backend/convex/public/conversations.ts`
+
+- **`create` mutation** — the initial assistant greeting now uses the org's
+  configured `widgetSettings.greetMessage` when set, falling back to "Hello,
+  how can I help you today?" (replaces the `TODO` placeholder)
+
+---
+
 #### Widget customization settings — `apps/web/modules/customization/`
 
 - **`ui/views/customization-view/index.tsx`** (new) — `CustomizationView`;

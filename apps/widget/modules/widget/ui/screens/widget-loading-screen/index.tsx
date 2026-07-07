@@ -3,7 +3,7 @@
 import { LoaderIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useAtomValue, useSetAtom } from "jotai"
-import { useAction, useMutation } from "convex/react"
+import { useAction, useMutation, useQuery } from "convex/react"
 
 import { api } from "@workspace/backend/_generated/api"
 
@@ -13,6 +13,7 @@ import {
   errorMessageAtom,
   loadingMessageAtom,
   organizationIdAtom,
+  widgetSettingsAtom,
   screenAtom,
 } from "@/modules/widget/atoms/widget-atoms"
 
@@ -29,6 +30,7 @@ export const WidgetLoadingScreen = ({
   const setScreen = useSetAtom(screenAtom)
   const setErrorMessage = useSetAtom(errorMessageAtom)
   const loadingMessage = useAtomValue(loadingMessageAtom)
+  const setWidgetSettings = useSetAtom(widgetSettingsAtom)
   const setOrganizationId = useSetAtom(organizationIdAtom)
   const setLoadingMessage = useSetAtom(loadingMessageAtom)
 
@@ -91,7 +93,7 @@ export const WidgetLoadingScreen = ({
 
     if (!contactSessionId) {
       setSessionValid(false)
-      setStep("done")
+      setStep("settings")
       return
     }
 
@@ -100,13 +102,35 @@ export const WidgetLoadingScreen = ({
     validateContactSession({ contactSessionId })
       .then((result) => {
         setSessionValid(result.valid)
-        setStep("done")
+        setStep("settings")
       })
       .catch(() => {
         setSessionValid(false)
-        setStep("done")
+        setStep("settings")
       })
   }, [step, contactSessionId, validateContactSession, setLoadingMessage])
+
+  // Step 3: Load Widget Settings
+  const widgetSettings = useQuery(
+    api.public.widgetSettings.getByOrganizationId,
+    organizationId
+      ? {
+          organizationId,
+        }
+      : "skip"
+  )
+  useEffect(() => {
+    if (step !== "settings") {
+      return
+    }
+
+    setLoadingMessage("Loading widget settings...")
+
+    if (widgetSettings !== undefined) {
+      setWidgetSettings(widgetSettings)
+      setStep("done")
+    }
+  }, [step, widgetSettings, setStep, setWidgetSettings, setLoadingMessage])
 
   useEffect(() => {
     if (step !== "done") {
