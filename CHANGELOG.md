@@ -9,6 +9,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Vapi connected dashboard — `apps/web/modules/plugins/`
+
+- **`ui/components/vapi-connected-view/index.tsx`** (new) — `VapiConnectedView`;
+  replaces the placeholder "Connected!!" text with a full management view:
+  integration card (logo, disconnect button), a "Widget Configuration" card
+  linking to `/customization`, and a tabbed `Phone Numbers` / `AI Assistants`
+  panel
+- **`ui/components/vapi-phone-numbers-tab/index.tsx`** (new) —
+  `VapiPhoneNumbersTab`; table of the org's Vapi phone numbers (number, name,
+  active/inactive status badge) via `useVapiPhoneNumbers`; loading and
+  empty states handled inline
+- **`ui/components/vapi-assistants-tab/index.tsx`** (new) —
+  `VapiAssistantsTab`; table of the org's Vapi assistants (name, model,
+  first message) via `useVapiAssistants`
+- **`hooks/use-vapi-data.ts`** (new) — `useVapiAssistants` /
+  `useVapiPhoneNumbers`; thin `useAction`-backed data hooks with local
+  loading/error state and toast-on-failure, typed directly off
+  `api.private.vapi.getAssistants._returnType` /
+  `.getPhoneNumbers._returnType`
+- **`VapiView`** — now renders `<VapiConnectedView onDisconnect={toggleConnection} />`
+  in place of the connected view; `handleSubmit` renamed to `toggleConnection`
+  for clarity; adds a `VapiPluginRemoveForm` confirmation dialog (calls
+  `api.private.plugins.remove`)
+
+#### Vapi server API access — `packages/backend/convex/private/vapi.ts`
+
+- **`getAssistants`** / **`getPhoneNumbers`** actions (new) — identity/org-gated;
+  resolve the org's stored plugin, fetch and decrypt its Vapi credentials from
+  AWS Secrets Manager, then call `@vapi-ai/server-sdk`'s `VapiClient` (`token:
+privateApiKey`) to list assistants / phone numbers; both guard against a
+  missing plugin, missing secret, or incomplete credentials
+- **`@vapi-ai/server-sdk ^0.10.2`** added to `packages/backend` dependencies
+
+---
+
 #### Vapi plugin integration — `apps/web/modules/plugins/`, `packages/backend/convex/`
 
 - **`ui/views/vapi-view/index.tsx`** (new) — `VapiView`; plugin connection page
