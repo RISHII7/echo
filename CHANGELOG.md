@@ -9,6 +9,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Vapi plugin integration — `apps/web/modules/plugins/`, `packages/backend/convex/`
+
+- **`ui/views/vapi-view/index.tsx`** (new) — `VapiView`; plugin connection page
+  showing a `PluginCard` (feature list: web voice calls, phone numbers, outbound
+  calls, workflows) when disconnected, or a connected placeholder state when a
+  plugin record exists; `VapiPluginForm` dialog collects a public/private API
+  key pair (`react-hook-form` + `zodResolver`, both keys required) and submits
+  via `api.private.secrets.upsert`, with `sonner` toast feedback on
+  success/failure
+- **`ui/components/plugin-card/index.tsx`** (new) — `PluginCard`; reusable
+  service-connection card showing a service ↔ platform logo swap icon, a
+  feature list, and a "Connect" button
+- **`app/(dashboard)/plugins/vapi/page.tsx`** — now renders `<VapiView />` (was
+  a static `<p>Vapi Plugin</p>`)
+- **`app/layout.tsx`** — added `<Toaster />` (from `sonner`) to the root layout
+  so toast notifications render app-wide
+- **`apps/web/public/vapi.jpg`** (new) — Vapi service logo asset
+
+#### Encrypted credential storage — `packages/backend/convex/`
+
+- **`lib/secrets.ts`** (new) — thin AWS Secrets Manager client wrapper:
+  `createSecretsManagerClient`, `getSecretValue`, `upsertSecret` (creates the
+  secret, falling back to an update via `PutSecretValueCommand` if it already
+  exists, caught via `ResourceExistsException`), and `parseSecretString`
+- **`system/secrets.ts`** — `upsert` internal action; stores a service's
+  credentials in AWS Secrets Manager under `tenant/{organizationId}/{service}`,
+  then records the secret's name against the organization via
+  `system/plugins.upsert`
+- **`private/secrets.ts`** — `upsert` mutation; identity/org-gated public
+  entry point; schedules `system.secrets.upsert` via `ctx.scheduler.runAfter(0,
+...)` since mutations cannot call actions (or external APIs) directly
+- **`system/plugins.ts`** (new) — `upsert` internal mutation (insert-or-patch a
+  `plugins` record for an org+service pair) and
+  `getByOrganizationIdAndService` internal query
+- **`private/plugins.ts`** (new) — `getOne` query and `remove` mutation,
+  both identity/org-gated, for the dashboard's plugin connection state
+- **`plugins` table** (new, `schema.ts`) — `organizationId`, `service`
+  (currently `"vapi"` only), `secretName`; indexed by `organizationId` and by
+  `organizationId` + `service`
+- **`@aws-sdk/client-secrets-manager ^3.1080.0`** added to `packages/backend`
+  dependencies
+
+---
+
 #### Knowledge base search tool — `packages/backend/convex/system/ai/tools/search.ts`
 
 - **`search` tool** (new) — `createTool` definition; resolves the calling
