@@ -9,6 +9,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Widget customization settings — `apps/web/modules/customization/`
+
+- **`ui/views/customization-view/index.tsx`** (new) — `CustomizationView`;
+  loads `widgetSettings` and the org's Vapi plugin state concurrently, shows a
+  spinner until both resolve, then renders `CustomizationForm`
+- **`ui/components/customization-form/index.tsx`** (new) — `CustomizationForm`;
+  `react-hook-form` + `zodResolver` form with a "General Chat Settings" card
+  (greeting message, three optional default-suggestion inputs) and a
+  conditionally-rendered "Voice Assistant Settings" card (only when
+  `hasVapiPlugin` is true); submits via `api.private.widgetSettings.upsert`
+  with toast feedback; normalizes a `"none"` select value back to an empty
+  string before saving
+- **`ui/components/vapi-form-fields/index.tsx`** (new) — `VapiFormFields`;
+  two `Select` fields (Voice Assistant, Display Phone Number) populated from
+  `useVapiAssistants` / `useVapiPhoneNumbers`, disabled while loading or while
+  the form is submitting
+- **`schemas/index.ts`** / **`types/index.ts`** (new) — `widgetSettingsSchema`
+  (zod) and the derived `FormSchema` type, shared between the form and its
+  field components
+- **`app/(dashboard)/customization/page.tsx`** — now renders
+  `<CustomizationView />` (was a bare `<div>Customization</div>`)
+
+#### Widget settings persistence — `packages/backend/convex/private/widgetSettings.ts`
+
+- **`upsert` mutation** (new) — identity/org-gated; insert-or-patch a single
+  `widgetSettings` document per organization (`greetMessage`,
+  `defaultSuggestions`, `vapiSettings`)
+- **`getOne` query** (new) — identity/org-gated; returns the org's
+  `widgetSettings` document or `null`
+- **`widgetSettings` table** (new, `schema.ts`) — `organizationId`,
+  `greetMessage`, `defaultSuggestions` (three optional strings), `vapiSettings`
+  (`assistantId` / `phoneNumber`, both optional); indexed by `organizationId`
+
+### Fixed
+
+#### Vapi data hooks race condition — `apps/web/modules/plugins/hooks/use-vapi-data.ts`
+
+- **`useVapiAssistants`** / **`useVapiPhoneNumbers`** — added a `cancelled` flag
+  inside the effect to guard all `setState` calls, preventing a "set state on
+  an unmounted component" warning/leak if the component unmounts before the
+  action resolves
+- Removed `getAssistants` / `getPhoneNumbers` from the effect's dependency
+  array (now fetches once on mount) — `useAction` returns a new function
+  reference on every render, so including it caused a render → refetch →
+  render infinite loop
+
+#### Vapi form field placeholder — `apps/web/modules/customization/ui/components/vapi-form-fields/index.tsx`
+
+- The "Display Phone Number" select's loading placeholder checked
+  `assistantsLoading` instead of `phoneNumbersLoading` — copy-paste bug that
+  showed "Loading assistants..." while phone numbers were still loading (the
+  field's `disabled` state was already correct)
+
+---
+
 #### Vapi connected dashboard — `apps/web/modules/plugins/`
 
 - **`ui/components/vapi-connected-view/index.tsx`** (new) — `VapiConnectedView`;

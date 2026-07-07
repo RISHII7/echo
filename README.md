@@ -72,6 +72,7 @@ Echo is a production-ready, full-stack monorepo platform engineered for enterpri
 - **RAG File Embeddings** — `@convex-dev/rag`-powered knowledge base with organization-namespaced, content-hash-deduplicated file indexing (`addFile`/`deleteFile`); Gemini-powered text extraction from images, PDFs, and text/HTML files; free-tier `gemini-embedding-001` embeddings
 - **Knowledge Base Dashboard** — `FilesView` paginated file table with drag-and-drop `UploadDialog` (PDF/CSV/TXT) and `DeleteFileDialog`, backed by a `private/files.list` query that maps RAG entries to a simplified `PublicFile` view model
 - **Vapi Plugin** — dashboard connection flow for Vapi voice AI credentials, encrypted at rest in AWS Secrets Manager (per-organization, per-service secret naming) via a `plugins` table tracking connection state; connected view with tabbed Phone Numbers / AI Assistants tables backed by `@vapi-ai/server-sdk`
+- **Widget Customization** — per-organization `widgetSettings` (greeting message, default suggestions, Vapi voice assistant/phone number selection) editable via a `react-hook-form` + zod-validated dashboard form
 - **Type Safety** — End-to-end TypeScript with strict mode and generated API types across all packages
 - **Design System** — Shared UI component library with 40+ shadcn/ui components built on Radix primitives; blue-based color palette, font and shadow CSS custom property tokens, and active-state gradient navigation highlighting
 - **Performance** — Next.js Turbopack, React Server Components, and Tailwind CSS v4
