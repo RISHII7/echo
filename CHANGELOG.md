@@ -9,6 +9,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Widget voice calling — `apps/widget/modules/widget/`
+
+- **`ui/screens/widget-voice-screen/index.tsx`** (new) — `WidgetVoiceScreen`;
+  live voice-call UI built on `useVapi()`: shows a scrolling transcript once
+  the call produces messages (falls back to a "Transcript will appear here"
+  empty state), a pulsing red/green indicator for assistant-speaking vs.
+  listening, and a single Start/End call button that swaps based on
+  `isConnected`
+- **`hooks/use-vapi.ts`** — no longer hardcodes empty-string test credentials;
+  reads the real `publicApiKey` from `vapiSecretsAtom` to construct the `Vapi`
+  client, and `startCall()` now passes the organization's configured
+  `widgetSettings.vapiSettings.assistantId` (guards against missing secrets or
+  assistant ID)
+- **`ui/screens/widget-loading-screen/index.tsx`** — new `"vapi"` init step
+  (`"settings" → "vapi" → "done"`); calls
+  `api.public.secrets.getVapiSecrets` and stores the result (or `null` on
+  failure) in `vapiSecretsAtom`; this step is optional — a failed/missing Vapi
+  connection doesn't block the widget from reaching `"done"`
+- **`ui/screens/widget-selection-screen/index.tsx`** — two new conditionally
+  rendered options: "Start voice call" (shown when `hasVapiSecretsAtom` is true
+  and an assistant is configured, routes to `"voice"`) and "Call us" (shown
+  when a phone number is configured, routes to `"contact"`)
+- **`atoms/widget-atoms/index.ts`** — **`vapiSecretsAtom`**
+  (`{ publicApiKey: string } | null`) and derived **`hasVapiSecretsAtom`**
+  (`get => get(vapiSecretsAtom) !== null`)
+- **`ui/views/widget-view/index.tsx`** — `voice` slot wired to
+  `<WidgetVoiceScreen />` (was `<p>TODO: Voice</p>`)
+
+#### Widget-facing Vapi credentials — `packages/backend/convex/public/secrets.ts`
+
+- **`getVapiSecrets` action** (new) — unauthenticated (widget-facing); resolves
+  the org's Vapi plugin, decrypts its AWS Secrets Manager secret, and returns
+  **only** `{ publicApiKey }` — the private key is never exposed to the client;
+  returns `null` if no plugin, no secret, or incomplete credentials exist
+
+---
+
 #### Widget settings consumption — `apps/widget/modules/widget/`
 
 - **`ui/screens/widget-loading-screen/index.tsx`** — new `"settings"` init step
