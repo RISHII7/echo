@@ -26,6 +26,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@workspace/ui/components/sidebar"
+import { cn } from "@workspace/ui/lib/utils"
 
 const customerSupportItems = [
   {
@@ -34,7 +35,7 @@ const customerSupportItems = [
     icon: InboxIcon,
   },
   {
-    title: "Knowldge Base",
+    title: "Knowledge Base",
     url: "/files",
     icon: LibraryBigIcon,
   },
@@ -115,6 +116,10 @@ export const DashboardSidebar = () => {
               {customerSupportItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
+                    className={cn(
+                      isActive(item.url) &&
+                        "bg-linear-to-b from-sidebar-primary to-[#0b63f3]! text-sidebar-primary-foreground! hover:to-[#0b63f3]/90!"
+                    )}
                     asChild
                     isActive={isActive(item.url)}
                     tooltip={item.title}
@@ -138,6 +143,10 @@ export const DashboardSidebar = () => {
               {configurationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
+                    className={cn(
+                      isActive(item.url) &&
+                        "bg-linear-to-b from-sidebar-primary to-[#0b63f3]! text-sidebar-primary-foreground! hover:to-[#0b63f3]/90!"
+                    )}
                     asChild
                     isActive={isActive(item.url)}
                     tooltip={item.title}
@@ -161,6 +170,10 @@ export const DashboardSidebar = () => {
               {accountItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
+                    className={cn(
+                      isActive(item.url) &&
+                        "bg-linear-to-b from-sidebar-primary to-[#0b63f3]! text-sidebar-primary-foreground! hover:to-[#0b63f3]/90!"
+                    )}
                     asChild
                     isActive={isActive(item.url)}
                     tooltip={item.title}
