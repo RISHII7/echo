@@ -21,6 +21,7 @@
     "@workspace/backend": "workspace:*",
     "@workspace/math": "workspace:*",
     "@workspace/ui": "workspace:*",
+    "bowser": "^2.14.1",
     "cmdk": "^1.1.1",
     "convex": "1.25.4",
     "countries-and-timezones": "^3.9.0",

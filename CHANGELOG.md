@@ -9,6 +9,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Dashboard contact panel — `apps/web/modules/dashboard/`
+
+- **`ui/components/contact-panel/index.tsx`** (new) — `ContactPanel`; reads
+  `conversationId` from the route params, fetches the associated contact
+  session, and displays a `DicebearAvatar` (with country-flag badge), name,
+  email, and a "Send Email" (`mailto:`) button, followed by three collapsible
+  `Accordion` sections built from the session's captured metadata:
+  - **Device Information** — browser/OS/device parsed via `bowser`, screen
+    resolution, viewport size, cookies enabled
+  - **Location & Language** — country (resolved from timezone), language,
+    timezone, UTC offset
+  - **Section details** — session start time
+  - Renders `null` while loading or if no contact session is found
+- **`ui/layouts/conversation-id-layout/index.tsx`** (new) —
+  `ConversationIdLayout`; resizable two-pane layout for the conversation detail
+  route (chat at 60%, `ContactPanel` at 40%, hidden below the `lg` breakpoint)
+- **`app/(dashboard)/conversations/[conversationId]/layout.tsx`** (new) —
+  wires the route to `<ConversationIdLayout>`
+
+#### Contact session lookup by conversation — `packages/backend/convex/private/contactSessions.ts`
+
+- **`getOneByConversationId` query** (new) — identity/org-gated; resolves the
+  conversation, verifies it belongs to the caller's organization, then returns
+  its associated `contactSession` document
+- **`bowser ^2.14.1`** added to `apps/web` dependencies (user-agent parsing for
+  the Device Information accordion section)
+
+---
+
 #### Widget contact screen — `apps/widget/modules/widget/ui/screens/widget-contact-screen/`
 
 - **`index.tsx`** (new) — `WidgetContactScreen`; displays the organization's
