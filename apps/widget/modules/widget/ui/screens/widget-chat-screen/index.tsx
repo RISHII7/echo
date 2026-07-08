@@ -31,7 +31,6 @@ import { Form, FormField } from "@workspace/ui/components/form"
 import {
   AIConversation,
   AIConversationContent,
-  AIConversationScrollButton,
 } from "@workspace/ui/components/ai/conversation"
 import {
   AIInput,

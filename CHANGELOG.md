@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+#### Lint cleanup — zero warnings across the monorepo
+
+- `packages/ui` `hint.tsx` — the `side` / `align` props were destructured but
+  never forwarded to `TooltipContent`; now passed through (fixes the unused‑var
+  warning **and** makes the props functional)
+- `packages/ui` `ai/branch.tsx` — `childrenArray` wrapped in `useMemo` so the
+  effect's dependencies are stable (fixes `react-hooks/exhaustive-deps`)
+- `apps/widget` `widget-chat-screen` — removed an unused
+  `AIConversationScrollButton` import
+- `apps/widget` `widget-loading-screen` — escaped an apostrophe and added the
+  two stable Jotai setters to a dependency array; documented the intentional
+  effect‑driven bootstrap state machine (`set-state-in-effect`)
+- Documented intentional React patterns with justified, scoped
+  `eslint-disable` comments (external‑system syncs in `use-vapi`, `use-mobile`,
+  `carousel`, `reasoning`; deliberate skeleton randomness in `sidebar`;
+  once‑on‑mount data hooks in `use-vapi-data`)
+- Excluded the pre‑built, minified embed loader bundle
+  (`apps/widget/public/widget.js`) from linting — it is shipped static output,
+  not source
+
 ### Added
 
 #### Documentation suite & branding — `docs/`, `README.md`, `apps/*/app/icon.svg`

@@ -67,6 +67,8 @@ export const AIReasoning = memo(
     useEffect(() => {
       if (isStreaming) {
         if (startTime === null) {
+          // Intentional one-shot timing side-effect (records stream start).
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setStartTime(Date.now())
         }
       } else if (startTime !== null) {

@@ -26,6 +26,8 @@ export const useVapi = () => {
     }
 
     const vapiInstance = new Vapi(vapiSecrets.publicApiKey)
+    // Store the Vapi client instance created for this external SDK connection.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setVapi(vapiInstance)
 
     vapiInstance.on("call-start", () => {
@@ -68,6 +70,10 @@ export const useVapi = () => {
     return () => {
       vapiInstance?.stop()
     }
+    // Mount-once initialization of the Vapi SDK client. `vapiSecrets` is already
+    // resolved before the voice screen mounts, so it is stable here; re-running
+    // on its identity would needlessly tear down and rebuild the connection.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const startCall = () => {

@@ -47,6 +47,10 @@ export const useVapiAssistants = (): {
     return () => {
       cancelled = true
     }
+    // `getAssistants` (from useAction) is a new reference every render, so
+    // including it would re-run this effect endlessly. We intentionally fetch
+    // once on mount; the `cancelled` flag guards against a late resolve.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return { data, isLoading, error }
@@ -91,6 +95,10 @@ export const useVapiPhoneNumbers = (): {
     return () => {
       cancelled = true
     }
+    // `getPhoneNumbers` (from useAction) is a new reference every render, so
+    // including it would re-run this effect endlessly. We intentionally fetch
+    // once on mount; the `cancelled` flag guards against a late resolve.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return { data, isLoading, error }

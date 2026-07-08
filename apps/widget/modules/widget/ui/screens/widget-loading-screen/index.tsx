@@ -1,5 +1,12 @@
 "use client"
 
+/* eslint-disable react-hooks/set-state-in-effect --
+   This screen is an intentional, effect-driven bootstrap state machine. Each
+   step effect (org → session → settings → vapi → done) advances `step` and
+   updates the loading message as its async validation resolves. The
+   synchronous setState calls are deliberate, sequential transitions — not a
+   React ↔ external-system sync smell the rule is meant to catch. */
+
 import { LoaderIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useAtomValue, useSetAtom } from "jotai"
@@ -164,6 +171,8 @@ export const WidgetLoadingScreen = ({
     setVapiSecrets,
     setLoadingMessage,
     setStep,
+    setErrorMessage,
+    setScreen,
   ])
 
   useEffect(() => {
@@ -179,7 +188,7 @@ export const WidgetLoadingScreen = ({
     <>
       <WidgetHeader>
         <div className="flex flex-col justify-between gap-y-2 px-2 py-6 font-semibold">
-          <p className="text-3xl">We're getting things ready</p>
+          <p className="text-3xl">We&apos;re getting things ready</p>
           <p className="text-lg">Just a moment</p>
         </div>
       </WidgetHeader>
