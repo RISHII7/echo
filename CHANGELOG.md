@@ -9,6 +9,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Billing and Pro plan gating — `apps/web/modules/billing/`
+
+- **`ui/views/billing-view/index.tsx`** (new) — `BillingView`; "Plans & Billing"
+  page rendering Clerk's `PricingTable`
+- **`ui/components/pricing-table/index.tsx`** (new) — wraps Clerk's
+  `<PricingTable for="organization">` with themed `appearance.elements` overrides
+  to match the dashboard's card styling
+- **`ui/components/premium-feature-overlay/index.tsx`** (new) —
+  `PremiumFeatureOverlay`; blurs and disables pointer events on gated page
+  content, overlays a dark backdrop, and centers an upgrade prompt card listing
+  the six Pro-tier features (AI Customer Support, AI Voice Agent, Phone
+  System, Knowledge Base, Team Access, Widget Customization) with a "View
+  Plans" button linking to `/billing`
+- **`app/(dashboard)/billing/page.tsx`** — now renders `<BillingView />` (was a
+  bare `<div>Billing</div>`)
+- **`app/(dashboard)/customization/page.tsx`**, **`files/page.tsx`**,
+  **`plugins/vapi/page.tsx`** — each now an `async` Server Component that checks
+  `(await auth()).has({ plan: "pro" })` and renders the real view wrapped in
+  `<PremiumFeatureOverlay>` when the organization isn't on the Pro plan
+
+#### Clerk billing webhook — `packages/backend/convex/http.ts`
+
+- **`POST /clerk-webhook`** (new) — verifies the incoming webhook's signature
+  via `svix` (`svix-id` / `svix-timestamp` / `svix-signature` headers) before
+  processing; on `subscription.updated`, sets the organization's
+  `maxAllowedMemberships` in Clerk (5 seats if `status === "active"`, else 1)
+  and persists the subscription status via `system/subscriptions.upsert`;
+  unrecognized event types are logged and ignored
+- **`system/subscriptions.ts`** (new) — `upsert` internal mutation
+  (insert-or-patch by `organizationId`) and `getByOrganizationId` internal query
+- **`subscriptions` table** (new, `schema.ts`) — `organizationId`, `status`;
+  indexed by `organizationId`
+- **`svix ^1.96.1`** added to `packages/backend` dependencies
+
+#### Themed Clerk provider — `apps/web/app/layout.tsx`
+
+- **`ClerkProvider`** now passes `appearance.variables.colorPrimary: "#3C82F6"`
+  to match the dashboard's blue design-system palette
+
+### Fixed
+
+#### Clerk API drift — `apps/web/modules/billing/ui/components/pricing-table/index.tsx`, `apps/web/app/(dashboard)/files/page.tsx`
+
+- **`<PricingTable forOrganizations>`** — `forOrganizations` was a boolean prop
+  on an older Clerk SDK version; the installed `@clerk/nextjs` (via
+  `@clerk/shared@4.23.0`) replaced it with `for` typed as `ForPayerType =
+'organization' | 'user'`. Fixed to `for="organization"`
+- **`<Protect condition={...} fallback={...}>`** — the `Protect` component has
+  been removed entirely from both `@clerk/nextjs` and `@clerk/react` in the
+  installed versions (not renamed). Replaced with the server-side equivalent:
+  `const { has } = await auth(); has({ plan: "pro" })`, called directly in each
+  gated page component (now `async`)
+
+---
+
 #### Dashboard contact panel — `apps/web/modules/dashboard/`
 
 - **`ui/components/contact-panel/index.tsx`** (new) — `ContactPanel`; reads
