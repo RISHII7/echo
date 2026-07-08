@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 
 import "@workspace/ui/globals.css"
@@ -10,6 +11,14 @@ const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
+
+export const metadata: Metadata = {
+  title: "Echo Widget",
+  description: "Echo AI-powered support chat and voice widget.",
+  icons: {
+    icon: "/icon.svg",
+  },
+}
 
 export default function RootLayout({
   children,

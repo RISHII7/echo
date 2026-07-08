@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Documentation suite & branding — `docs/`, `README.md`, `apps/*/app/icon.svg`
+
+- **Complete rewrite of `README.md`** into a comprehensive, product‑first
+  overview: what Echo is, a feature tour, Mermaid architecture and flow
+  diagrams, the data model (ERD), tech stack, monorepo map, full setup with
+  every external service, a backend function reference, embedding instructions,
+  and deployment guidance
+- **New `docs/` suite** (14 documents, all with Mermaid diagrams):
+  `product-overview` (client‑facing), `architecture`, `data-model`,
+  `authentication`, `ai-agent`, `conversation-flows`, `widget`, `voice`,
+  `billing`, `backend-api`, `setup`, `deployment`, `embedding`, and an index
+- **Echo branding** — replaced the default Next.js/Vercel `favicon.ico` in both
+  `apps/web` and `apps/widget` with an `icon.svg` built from the Echo logo, and
+  added product `metadata` (title, description, icons) to both root layouts
+
 #### Embeddable widget loader — `apps/embed/`
 
 - **New `embed` app** (Vite library build, IIFE bundle) — a standalone,
