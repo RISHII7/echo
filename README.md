@@ -74,6 +74,7 @@ Echo is a production-ready, full-stack monorepo platform engineered for enterpri
 - **Vapi Plugin** — dashboard connection flow for Vapi voice AI credentials, encrypted at rest in AWS Secrets Manager (per-organization, per-service secret naming) via a `plugins` table tracking connection state; connected view with tabbed Phone Numbers / AI Assistants tables backed by `@vapi-ai/server-sdk`
 - **Widget Customization** — per-organization `widgetSettings` (greeting message, default suggestions, Vapi voice assistant/phone number selection) editable via a `react-hook-form` + zod-validated dashboard form; consumed live by the widget for its initial greeting and first-message suggestion chips
 - **Widget Voice Calling** — end-to-end Vapi voice calls in the widget, gated behind the organization's connected plugin and configured assistant; live transcript, speaking/listening indicator, and Start/End call controls via `useVapi()`, backed by a widget-facing action that exposes only the public API key
+- **Widget Contact Screen** — copy-to-clipboard and tap-to-call phone number display for organizations with a configured Vapi phone number
 - **Type Safety** — End-to-end TypeScript with strict mode and generated API types across all packages
 - **Design System** — Shared UI component library with 40+ shadcn/ui components built on Radix primitives; blue-based color palette, font and shadow CSS custom property tokens, and active-state gradient navigation highlighting
 - **Performance** — Next.js Turbopack, React Server Components, and Tailwind CSS v4

@@ -9,6 +9,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Widget contact screen — `apps/widget/modules/widget/ui/screens/widget-contact-screen/`
+
+- **`index.tsx`** (new) — `WidgetContactScreen`; displays the organization's
+  configured Vapi phone number with a "Copy Number" button
+  (`navigator.clipboard`, shows a 2-second "Copied!" confirmation state) and a
+  "Call Now" button (`tel:` link)
+- **`ui/views/widget-view/index.tsx`** — `contact` slot wired to
+  `<WidgetContactScreen />` (was `<p>TODO: Contact</p>`)
+
+### Changed
+
+#### Widget layout sizing — `apps/widget/app/layout.tsx`, `ui/views/widget-view/index.tsx`
+
+- Root layout now wraps `children` in a `h-screen w-screen` container, and
+  `WidgetView`'s `<main>` sizes off that container (`h-full w-full`) instead of
+  viewport units (`min-h-screen`, `min-w-screen`) — resolves a `TODO` about
+  whether viewport-relative sizing was needed; more correct for an embeddable
+  widget rendered inside a fixed-size iframe rather than a full page
+- `WidgetVoiceScreen`'s transcript `AIConversation` simplified to `h-full`
+  (was `h-full flex-1`) to match
+
+---
+
 #### Widget voice calling — `apps/widget/modules/widget/`
 
 - **`ui/screens/widget-voice-screen/index.tsx`** (new) — `WidgetVoiceScreen`;
