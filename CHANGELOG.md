@@ -7,6 +7,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+> Changes staged for the next release.
+
+---
+
+## [1.0.0] - 2026-07-09
+
+### Overview
+
+**Echo 1.0 — the first general-availability release.** This is the platform
+coming together end to end: a multi-tenant, AI-powered customer support product
+that companies embed on their website with a single `<script>` tag.
+
+Since v0.6.0 (the dashboard shell), Echo gained everything that makes it a
+product: an embeddable **chat and voice widget**, an **AI support agent**
+grounded in a per-organization **knowledge base** (RAG), a real-time **operator
+dashboard** with human takeover and AI-assisted replies, **Vapi voice** calling
+with encrypted credential storage, **Clerk-powered billing** with plan gating
+and a signed subscription webhook, a standalone **embed loader**, a full
+**documentation suite**, Echo **branding**, and a **zero-warning** lint pass
+across the monorepo.
+
+Highlights:
+
+- **Embeddable widget** — one-tag install; chat, voice, contact, and inbox
+  surfaces driven by a Jotai state machine; org-scoped and session-validated.
+- **AI agent + RAG** — Gemini 2.5 Flash with `search` / `escalate` / `resolve`
+  tools, answering only from your uploaded documents; `gemini-embedding-001`
+  embeddings, organization-namespaced and content-hash-deduplicated.
+- **Operator dashboard** — real-time inbox, chat with AI "Enhance," contact
+  panel with device/location metadata, widget customization, integrations.
+- **Voice (Vapi)** — live web calls and phone options; private keys encrypted in
+  AWS Secrets Manager, only the public key ever reaches the browser.
+- **Billing** — Clerk `PricingTable`, `PremiumFeatureOverlay` gating, and a
+  `svix`-verified webhook that syncs subscription status and seat limits.
+- **Embed loader** — dependency-free Vite/IIFE script with a `window.EchoWidget`
+  API and `postMessage` coordination.
+- **Docs & DX** — product-first README, a 14-document `docs/` suite with Mermaid
+  diagrams, Echo favicon/metadata, and zero lint warnings.
+
+---
+
 ### Fixed
 
 #### Lint cleanup — zero warnings across the monorepo
@@ -1848,7 +1889,8 @@ Initial release of **Echo** — an enterprise-grade full-stack monorepo platform
 
 ---
 
-[Unreleased]: https://github.com/RISHII7/echo/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/RISHII7/echo/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/RISHII7/echo/compare/v0.6.0...v1.0.0
 [0.6.0]: https://github.com/RISHII7/echo/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/RISHII7/echo/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/RISHII7/echo/compare/v0.4.1...v0.5.0
