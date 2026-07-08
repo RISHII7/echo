@@ -77,6 +77,7 @@ Echo is a production-ready, full-stack monorepo platform engineered for enterpri
 - **Widget Contact Screen** — copy-to-clipboard and tap-to-call phone number display for organizations with a configured Vapi phone number
 - **Dashboard Contact Panel** — resizable side panel on conversation detail pages showing the contact's avatar, email, and collapsible device/location/session metadata (browser, OS, timezone, country flag) parsed from captured browser data
 - **Billing & Pro Plan Gating** — Clerk-powered `PricingTable` billing page; Knowledge Base, Voice Assistant, and Widget Customization pages check the organization's plan server-side and show a `PremiumFeatureOverlay` upgrade prompt when not on Pro; a signature-verified Clerk webhook keeps organization seat limits and subscription status in sync; AI auto-response, message enhancement, and file uploads are all gated behind an active subscription; visitor contact sessions auto-refresh their 24-hour expiry during active conversations
+- **Setup & Integrations** — dashboard page with the organization ID (copy-to-clipboard) and install snippets for HTML, React, Next.js, and JavaScript embeds
 - **Type Safety** — End-to-end TypeScript with strict mode and generated API types across all packages
 - **Design System** — Shared UI component library with 40+ shadcn/ui components built on Radix primitives; blue-based color palette, font and shadow CSS custom property tokens, and active-state gradient navigation highlighting
 - **Performance** — Next.js Turbopack, React Server Components, and Tailwind CSS v4

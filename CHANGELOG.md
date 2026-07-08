@@ -9,6 +9,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Setup & integrations page — `apps/web/modules/integrations/`
+
+- **`ui/views/integrations-view/index.tsx`** (new) — `IntegrationsView`;
+  displays the organization's ID (read-only, copy-to-clipboard) and a grid of
+  four integration options (HTML, React, Next.js, JavaScript); clicking one
+  opens `IntegrationsDialog`, showing a two-step install snippet
+  (copy-to-clipboard code block, paste-in-page instructions) with the
+  organization ID interpolated into the script tag
+- **`constants/index.ts`** (new) — `INTEGRATIONS` list (id/title/icon per
+  framework) and one script template per framework
+  (`HTML_SCRIPT`/`REACT_SCRIPT`/`NEXTJS_SCRIPT`/`JAVASCRIPT_SCRIPT`); all four
+  currently share the same placeholder `<script
+data-organization-id="{{ORGANIZATION_ID}}">` tag — framework-specific
+  snippets are a follow-up
+- **`utils/index.ts`** (new) — `createScript(integrationId, organizationId)`;
+  selects the matching template and interpolates the organization ID
+- **`app/(dashboard)/integrations/page.tsx`** — now renders
+  `<IntegrationsView />` (was a bare `<div>Integrations</div>`)
+- **`apps/web/public/languages/`** (new) — four framework logo SVGs (html5,
+  react, nextjs, javascript)
+
+---
+
 #### Contact session auto-refresh — `packages/backend/convex/`
 
 - **`constants.ts`** (new) — `SESSION_DURATION_MS` (24 hours), extracted from
