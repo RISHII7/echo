@@ -78,6 +78,7 @@ Echo is a production-ready, full-stack monorepo platform engineered for enterpri
 - **Dashboard Contact Panel** — resizable side panel on conversation detail pages showing the contact's avatar, email, and collapsible device/location/session metadata (browser, OS, timezone, country flag) parsed from captured browser data
 - **Billing & Pro Plan Gating** — Clerk-powered `PricingTable` billing page; Knowledge Base, Voice Assistant, and Widget Customization pages check the organization's plan server-side and show a `PremiumFeatureOverlay` upgrade prompt when not on Pro; a signature-verified Clerk webhook keeps organization seat limits and subscription status in sync; AI auto-response, message enhancement, and file uploads are all gated behind an active subscription; visitor contact sessions auto-refresh their 24-hour expiry during active conversations
 - **Setup & Integrations** — dashboard page with the organization ID (copy-to-clipboard) and install snippets for HTML, React, Next.js, and JavaScript embeds
+- **Embeddable Widget Loader** — dependency-free Vite/IIFE `embed` script that any website drops in via a single `<script>` tag; injects a floating launcher and an organization-scoped `<iframe>`, with a `window.EchoWidget` API (`init` / `show` / `hide` / `destroy`) and `postMessage`-based close/resize handling
 - **Type Safety** — End-to-end TypeScript with strict mode and generated API types across all packages
 - **Design System** — Shared UI component library with 40+ shadcn/ui components built on Radix primitives; blue-based color palette, font and shadow CSS custom property tokens, and active-state gradient navigation highlighting
 - **Performance** — Next.js Turbopack, React Server Components, and Tailwind CSS v4
@@ -98,9 +99,10 @@ echo/
 │   │   └── modules/
 │   │       ├── auth/        # Auth feature module (views, layouts, guards)
 │   │       └── dashboard/   # Dashboard feature module (layout, sidebar)
-│   └── widget/              # Embeddable widget application (Vapi AI voice)
-│       └── modules/
-│           └── widget/      # Widget feature module (hooks, views, components)
+│   ├── widget/              # Embeddable widget application (Vapi AI voice)
+│   │   └── modules/
+│   │       └── widget/      # Widget feature module (hooks, views, components)
+│   └── embed/               # Standalone widget loader script (Vite IIFE bundle)
 ├── packages/
 │   ├── backend/             # Convex real-time backend (schema + server functions)
 │   ├── ui/                  # Shared component library

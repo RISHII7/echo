@@ -9,7 +9,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-#### Setup & integrations page — `apps/web/modules/integrations/`
+#### Embeddable widget loader — `apps/embed/`
+
+- **New `embed` app** (Vite library build, IIFE bundle) — a standalone,
+  dependency-free JavaScript loader that website owners drop onto any page via a
+  single `<script>` tag. It injects a floating action button and an `<iframe>`
+  pointing at the widget app, scoped to the embedding organization
+- **`embed.ts`** — the loader itself: reads `data-organization-id` /
+  `data-position` from its own `<script>` tag (with a `src*="embed"` fallback
+  lookup), renders a fixed-position launcher button and a hidden animated
+  iframe container, wires `postMessage` handling for `close` / `resize` events
+  from the widget, and exposes a `window.EchoWidget` API (`init`, `show`,
+  `hide`, `destroy`)
+- **`config.ts`** — `EMBED_CONFIG` (widget URL from `VITE_WIDGET_URL`, default
+  organization ID, default position); **`icons.ts`** — inline chat-bubble and
+  close SVG icons; **`vite.config.ts`** — IIFE library build (`EchoWidget`
+  global) plus a dev server on port 3002 opening `demo.html`
+- **`demo.html`** — interactive demo/playground with live init / show / hide /
+  destroy controls; **`landing.html`** — minimal embed smoke-test page
+- **`apps/widget/public/widget.js`** — the built loader bundle, served by the
+  widget app so `http://localhost:3001/widget.js` resolves in development
+
+#### Integration snippets now load the widget — `apps/web/modules/integrations/constants/index.ts`
+
+- The four framework snippets (`HTML_SCRIPT`, `REACT_SCRIPT`, `NEXTJS_SCRIPT`,
+  `JAVASCRIPT_SCRIPT`) now include `src="http://localhost:3001/widget.js"` so
+  the copied embed code actually loads the widget loader (was a bare
+  `data-organization-id` tag with no script source)
 
 - **`ui/views/integrations-view/index.tsx`** (new) — `IntegrationsView`;
   displays the organization's ID (read-only, copy-to-clipboard) and a grid of
