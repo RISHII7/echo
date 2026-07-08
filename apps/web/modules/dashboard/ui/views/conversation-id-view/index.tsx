@@ -1,6 +1,7 @@
 "use client"
 
 import { z } from "zod"
+import { toast } from "sonner"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { MoreHorizontalIcon, Wand2Icon } from "lucide-react"
@@ -87,6 +88,7 @@ export const ConversationIdView = ({
 
       form.setValue("message", response)
     } catch (error) {
+      toast.error("Something went wrong")
       console.error(error)
     } finally {
       setIsEnhancing(false)

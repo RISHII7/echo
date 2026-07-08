@@ -9,6 +9,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Contact session auto-refresh — `packages/backend/convex/`
+
+- **`constants.ts`** (new) — `SESSION_DURATION_MS` (24 hours), extracted from
+  `public/contactSessions.ts` into a shared constant
+- **`system/contactSessions.ts`** — **`refresh`** internal mutation (new);
+  extends a contact session's `expiresAt` by another `SESSION_DURATION_MS`
+  whenever less than `AUTO_REFRESH_THRESHOLD_MS` (4 hours) remains before
+  expiry; throws if the session is missing or already expired, otherwise
+  returns it unchanged when refresh isn't yet needed
+- **`public/conversations.ts`** (`create`) and **`public/messages.ts`**
+  (`create`) — both now call `system.contactSessions.refresh` at the start of
+  the handler, keeping an actively-chatting visitor's session alive instead of
+  expiring mid-conversation
+
+### Changed
+
+#### Subscription-gated AI features — `packages/backend/convex/`
+
+- **`public/messages.ts`** (`create`) — the support agent now only
+  auto-responds (`shouldTriggerAgent`) when the conversation is `"unresolved"`
+  **and** the organization's subscription status is `"active"` (resolves the
+  `TODO: Implement subscription check` placeholder); a conversation on an
+  inactive/missing subscription still accepts operator messages, just without
+  AI involvement
+- **`private/messages.ts`** (`enhanceResponse`) — now checks
+  `system.subscriptions.getByOrganizationId` and throws `BAD_REQUEST` /
+  "Missing subscription" if the org isn't on an active plan
+- **`private/files.ts`** (`addFile`) — same active-subscription check before
+  extracting text and indexing a file into the knowledge base
+
+#### Enhance error feedback — `apps/web/modules/dashboard/ui/views/conversation-id-view/index.tsx`
+
+- `handleEnhanceResponse`'s catch block now shows a `sonner` error toast
+  ("Something went wrong") in addition to logging to the console, so operators
+  get visible feedback when enhancement fails (e.g. due to the new subscription
+  check)
+
+---
+
 #### Billing and Pro plan gating — `apps/web/modules/billing/`
 
 - **`ui/views/billing-view/index.tsx`** (new) — `BillingView`; "Plans & Billing"
