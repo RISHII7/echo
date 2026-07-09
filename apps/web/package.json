@@ -17,7 +17,7 @@
     "@convex-dev/agent": "0.1.16",
     "@hookform/resolvers": "^5.4.0",
     "@sentry/nextjs": "^10.62.0",
-    "@shadcn/react": "^0.2.0",
+    "@shadcn/react": "^0.2.1",
     "@workspace/backend": "workspace:*",
     "@workspace/math": "workspace:*",
     "@workspace/ui": "workspace:*",
