@@ -16,13 +16,20 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_APP_URL ?? "https://echo-red-kappa.vercel.app"
+
+const siteTitle = "Echo — AI-Powered Customer Support Platform"
+const siteDescription =
+  "Echo is a B2B AI-powered customer support platform. Deploy an embeddable chat and voice widget, resolve conversations with an AI agent grounded in your knowledge base, and manage everything from a real-time operator dashboard."
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "Echo — AI-Powered Customer Support Platform",
+    default: siteTitle,
     template: "%s · Echo",
   },
-  description:
-    "Echo is a B2B AI-powered customer support platform. Deploy an embeddable chat and voice widget, resolve conversations with an AI agent grounded in your knowledge base, and manage everything from a real-time operator dashboard.",
+  description: siteDescription,
   applicationName: "Echo",
   keywords: [
     "AI customer support",
@@ -34,6 +41,18 @@ export const metadata: Metadata = {
   ],
   icons: {
     icon: "/icon.svg",
+  },
+  openGraph: {
+    type: "website",
+    url: siteUrl,
+    siteName: "Echo",
+    title: siteTitle,
+    description: siteDescription,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
   },
 }
 

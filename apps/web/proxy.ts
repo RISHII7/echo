@@ -1,12 +1,20 @@
 import { NextResponse } from "next/server"
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server"
 
-const isPublicRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)"])
+const isPublicRoute = createRouteMatcher([
+  "/sign-in(.*)",
+  "/sign-up(.*)",
+  // Social-share preview assets must be crawlable without authentication.
+  "/opengraph-image(.*)",
+  "/twitter-image(.*)",
+])
 
 const isOrgFreeRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/org-selection(.*)",
+  "/opengraph-image(.*)",
+  "/twitter-image(.*)",
 ])
 
 export default clerkMiddleware(async (auth, req) => {
