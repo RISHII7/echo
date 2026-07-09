@@ -40,6 +40,11 @@ updates:
       time: "09:00"
       timezone: "Asia/Kolkata"
     open-pull-requests-limit: 5
+    groups:
+      dependencies:
+        update-types:
+          - "minor"
+          - "patch"
     commit-message:
       prefix: "chore(web)"
       include: "scope"
@@ -60,6 +65,11 @@ updates:
       time: "09:00"
       timezone: "Asia/Kolkata"
     open-pull-requests-limit: 5
+    groups:
+      dependencies:
+        update-types:
+          - "minor"
+          - "patch"
     commit-message:
       prefix: "chore(widget)"
       include: "scope"
@@ -80,6 +90,11 @@ updates:
       time: "09:00"
       timezone: "Asia/Kolkata"
     open-pull-requests-limit: 5
+    groups:
+      dependencies:
+        update-types:
+          - "minor"
+          - "patch"
     commit-message:
       prefix: "chore(ui)"
       include: "scope"
