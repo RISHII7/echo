@@ -27,8 +27,6 @@ updates:
     labels:
       - "dependencies"
       - "automated"
-    reviewers:
-      - "RISHII7"
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
@@ -49,8 +47,9 @@ updates:
       - "dependencies"
       - "automated"
       - "app:web"
-    reviewers:
-      - "RISHII7"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   # Widget app dependencies
   - package-ecosystem: "npm"
@@ -68,8 +67,9 @@ updates:
       - "dependencies"
       - "automated"
       - "app:widget"
-    reviewers:
-      - "RISHII7"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   # UI package dependencies
   - package-ecosystem: "npm"
@@ -87,8 +87,9 @@ updates:
       - "dependencies"
       - "automated"
       - "package:ui"
-    reviewers:
-      - "RISHII7"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
@@ -106,5 +107,3 @@ updates:
       - "dependencies"
       - "automated"
       - "github-actions"
-    reviewers:
-      - "RISHII7"

@@ -8,3 +8,5 @@ pnpm-lock.yaml
 # Convex auto-generated files
 packages/backend/convex/_generated/
 packages/backend/convex/README.md
+# Pre-built embed loader bundle (generated from apps/embed, shipped as-is)
+apps/widget/public/widget.js
