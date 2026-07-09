@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+#### Open Graph & Twitter link previews
+
+- Added `metadataBase`, `openGraph`, and `twitter` metadata to the web app's
+  root layout so shared links render a proper social card instead of the
+  auth-gated app's "404: This page could not be found."
+- Added `apps/web/app/opengraph-image.tsx` (and a re-exporting
+  `twitter-image.tsx`) that generate a branded 1200×630 preview card at
+  build/request time via `next/og` — no static asset to maintain.
+- Marked `/opengraph-image` and `/twitter-image` as public routes in
+  `proxy.ts` so crawlers can fetch the preview image without authentication.
+
 ### Changed
 
 #### Production widget URL & dashboard entry point
