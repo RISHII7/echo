@@ -7,7 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-> Changes staged for the next release.
+### Changed
+
+#### Production widget URL & dashboard entry point
+
+- Replaced the hardcoded `http://localhost:3001` widget origin with the
+  deployed widget URL (`https://echo-widget-steel.vercel.app`) in:
+  - `apps/embed/landing.html` — the embed demo page
+  - `apps/web/modules/integrations/constants/index.ts` — the HTML, React,
+    Next.js, and vanilla JS snippets shown on the dashboard's Integrations
+    page, so copy-pasted embed code now points at the live widget instead of
+    a developer's local machine
+  - `apps/widget/public/widget.js` — rebuilt with `VITE_WIDGET_URL` set to the
+    deployed origin (`apps/embed/config.ts`'s `localhost:3001` remains as the
+    local-development fallback only)
+- `apps/web/next.config.ts` — added a redirect from `/` to `/conversations` so
+  the dashboard opens directly on the operator inbox instead of a blank root
+
+### Fixed
+
+#### CI: group Dependabot updates for apps/web, apps/widget, packages/ui
+
+- Dependabot's single-dependency PRs in this pnpm workspace never
+  regenerated `pnpm-lock.yaml` (only `package.json`), so every one of them
+  failed CI at `pnpm install --frozen-lockfile` with
+  `ERR_PNPM_OUTDATED_LOCKFILE`. The root workspace entry already used
+  `groups` and its grouped PRs correctly updated the lockfile and passed.
+- Mirrored that grouping onto `apps/web`, `apps/widget`, and `packages/ui` so
+  future minor/patch updates land as working, grouped PRs instead of broken
+  single-dependency ones.
 
 ---
 
