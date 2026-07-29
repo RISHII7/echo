@@ -63,7 +63,7 @@ jobs:
 
       - name: Post validation failure comment
         if: always() && (steps.semantic.outputs.error_message != null)
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
           header: pr-title-lint-error
           message: |
@@ -90,7 +90,7 @@ jobs:
 
       - name: Clear validation failure comment on success
         if: ${{ steps.semantic.outputs.error_message == null }}
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
           header: pr-title-lint-error
           delete: true
