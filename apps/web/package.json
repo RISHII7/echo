@@ -38,9 +38,9 @@
     "react-hook-form": "^7.80.0",
     "react-resizable-panels": "^4.12.0",
     "recharts": "3.8.0",
-    "sonner": "^2.0.7",
+    "sonner": "^2.0.8",
     "vaul": "^1.1.2",
-    "zod": "3.25.67"
+    "zod": "3.25.76"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
